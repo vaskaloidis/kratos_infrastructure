@@ -1,0 +1,10 @@
+version: '2'
+services:
+    app:
+        build: ./poseidon
+        network_mode: "host"
+        ports:
+          - "22:22"
+          - "3000:3000"
+        volumes:
+          - "/root"
