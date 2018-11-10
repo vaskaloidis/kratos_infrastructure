@@ -1,0 +1,6 @@
+[1;34m[#][0;0m Enumerating Subdomains
+[93m[!][0;0m Trying to discover subdomains in Google
+[93m[!][0;0m Trying to extract subdomains from DNS dumpster
+[1;31m[x][0;0m Failed to query DNS dumpster for subdomains
+[93m[!][0;0m Bruteforcing subdomains
+[1;34m[#][0;0m Done enumerating Subdomains

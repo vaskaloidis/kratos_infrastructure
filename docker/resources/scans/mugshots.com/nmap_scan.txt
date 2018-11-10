@@ -1,0 +1,15 @@
+Starting Nmap 7.70 ( https://nmap.org ) at 2018-10-25 04:28 EDT
+Nmap scan report for mugshots.com (52.72.55.221)
+Host is up (0.051s latency).
+Other addresses for mugshots.com (not scanned): 52.207.117.73
+rDNS record for 52.72.55.221: ec2-52-72-55-221.compute-1.amazonaws.com
+Not shown: 995 filtered ports
+PORT     STATE  SERVICE
+22/tcp   closed ssh
+53/tcp   open   domain
+80/tcp   open   http
+443/tcp  open   https
+8000/tcp closed http-alt
+
+Nmap done: 1 IP address (1 host up) scanned in 5.85 seconds
+

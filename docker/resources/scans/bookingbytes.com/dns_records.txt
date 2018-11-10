@@ -1,0 +1,34 @@
+[1;32m[v][0;0m Writing DNS query results
+A
+
+	104.219.250.6
+MX
+
+	0 bookingbytes.com.
+NS
+
+	ns1.bookingbytes.com.
+	ns2.bookingbytes.com.
+TXT
+
+	"v=spf1 +a +mx +ip4:104.219.250.6 ~all"
+SOA
+
+	ns1.bookingbytes.co. bookingbytes.gmail.co. 2017050518 3600 7200 1209600 86400
+[1;32m[v][0;0m Writing DNS query results
+MX
+
+	0 bookingbytes.com.
+NS
+
+	ns1.bookingbytes.com.
+	ns2.bookingbytes.com.
+SOA
+
+	ns1.bookingbytes.co. bookingbytes.gmail.co. 2017050518 3600 7200 1209600 86400
+TXT
+
+	"v=spf1 +a +mx +ip4:104.219.250.6 ~all"
+A
+
+	104.219.250.6

@@ -1,0 +1,368 @@
+[1;34m[#][0;0m Started collecting TLS data for bookingbytes.com
+[1;34m[#][0;0m Done collecting TLS data
+[1;32m[v][0;0m Supported Ciphers:
+|   TLSv1.0: 
+|     ciphers: 
+|       TLS_DHE_RSA_WITH_3DES_EDE_CBC_SHA (dh 2048) - C - [1;31mWEAK[0;0m
+|       TLS_DHE_RSA_WITH_AES_128_CBC_SHA (dh 2048) - A
+|       TLS_DHE_RSA_WITH_AES_256_CBC_SHA (dh 2048) - A
+|       TLS_ECDHE_RSA_WITH_3DES_EDE_CBC_SHA (secp256r1) - C - [1;31mWEAK[0;0m
+|       TLS_ECDHE_RSA_WITH_AES_128_CBC_SHA (secp256r1) - A
+|       TLS_ECDHE_RSA_WITH_AES_256_CBC_SHA (secp256r1) - A
+|       TLS_RSA_WITH_3DES_EDE_CBC_SHA (rsa 2048) - C - [1;31mWEAK[0;0m
+|       TLS_RSA_WITH_AES_128_CBC_SHA (rsa 2048) - A
+|       TLS_RSA_WITH_AES_256_CBC_SHA (rsa 2048) - A
+|     compressors: 
+|       NULL
+|     cipher preference: client
+|     warnings: 
+[1;31m|       64-bit block cipher 3DES vulnerable to SWEET32 attack[0;0m
+|   TLSv1.1: 
+|     ciphers: 
+|       TLS_DHE_RSA_WITH_3DES_EDE_CBC_SHA (dh 2048) - C - [1;31mWEAK[0;0m
+|       TLS_DHE_RSA_WITH_AES_128_CBC_SHA (dh 2048) - A
+|       TLS_DHE_RSA_WITH_AES_256_CBC_SHA (dh 2048) - A
+|       TLS_ECDHE_RSA_WITH_3DES_EDE_CBC_SHA (secp256r1) - C - [1;31mWEAK[0;0m
+|       TLS_ECDHE_RSA_WITH_AES_128_CBC_SHA (secp256r1) - A
+|       TLS_ECDHE_RSA_WITH_AES_256_CBC_SHA (secp256r1) - A
+|       TLS_RSA_WITH_3DES_EDE_CBC_SHA (rsa 2048) - C - [1;31mWEAK[0;0m
+|       TLS_RSA_WITH_AES_128_CBC_SHA (rsa 2048) - A
+|       TLS_RSA_WITH_AES_256_CBC_SHA (rsa 2048) - A
+|     compressors: 
+|       NULL
+|     cipher preference: client
+|     warnings: 
+[1;31m|       64-bit block cipher 3DES vulnerable to SWEET32 attack[0;0m
+|   TLSv1.2: 
+|     ciphers: 
+|       TLS_DHE_RSA_WITH_3DES_EDE_CBC_SHA (dh 2048) - C - [1;31mWEAK[0;0m
+|       TLS_DHE_RSA_WITH_AES_128_CBC_SHA (dh 2048) - A
+|       TLS_DHE_RSA_WITH_AES_128_CBC_SHA256 (dh 2048) - A
+|       TLS_DHE_RSA_WITH_AES_128_GCM_SHA256 (dh 2048) - A
+|       TLS_DHE_RSA_WITH_AES_256_CBC_SHA (dh 2048) - A
+|       TLS_DHE_RSA_WITH_AES_256_CBC_SHA256 (dh 2048) - A
+|       TLS_DHE_RSA_WITH_AES_256_GCM_SHA384 (dh 2048) - A
+|       TLS_ECDHE_RSA_WITH_3DES_EDE_CBC_SHA (secp256r1) - C - [1;31mWEAK[0;0m
+|       TLS_ECDHE_RSA_WITH_AES_128_CBC_SHA (secp256r1) - A
+|       TLS_ECDHE_RSA_WITH_AES_128_CBC_SHA256 (secp256r1) - A
+|       TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256 (secp256r1) - A
+|       TLS_ECDHE_RSA_WITH_AES_256_CBC_SHA (secp256r1) - A
+|       TLS_ECDHE_RSA_WITH_AES_256_CBC_SHA384 (secp256r1) - A
+|       TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384 (secp256r1) - A
+|       TLS_RSA_WITH_3DES_EDE_CBC_SHA (rsa 2048) - C - [1;31mWEAK[0;0m
+|       TLS_RSA_WITH_AES_128_CBC_SHA (rsa 2048) - A
+|       TLS_RSA_WITH_AES_128_CBC_SHA256 (rsa 2048) - A
+|       TLS_RSA_WITH_AES_128_GCM_SHA256 (rsa 2048) - A
+|       TLS_RSA_WITH_AES_256_CBC_SHA (rsa 2048) - A
+|       TLS_RSA_WITH_AES_256_CBC_SHA256 (rsa 2048) - A
+|       TLS_RSA_WITH_AES_256_GCM_SHA384 (rsa 2048) - A
+|     compressors: 
+|       NULL
+|     cipher preference: client
+|     warnings: 
+[1;31m|       64-bit block cipher 3DES vulnerable to SWEET32 attack[0;0m
+|_  least strength: C
+
+--------------------------------------------------------------------------------
+
+SNI Data:
+
+SANs:
+---------------
+ webdisk.bookingbytes.com
+bookingbytes.com
+www.bookingbytes.com
+webmail.bookingbytes.com
+mail.bookingbytes.com
+cpanel.bookingbytes.com
+---------------
+
+TLSv1.1: True
+
+Certificate:
+    Data:
+        Version: 3 (0x2)
+        Serial Number:
+            66:46:59:49:b0:da:c4:39:81:3c:51:2d:96:25:19:5d
+    Signature Algorithm: sha256WithRSAEncryption
+        Issuer: C=US, ST=TX, L=Houston, O=cPanel, Inc., CN=cPanel, Inc. Certification Authority
+        Validity
+            Not Before: Oct 15 00:00:00 2018 GMT
+            Not After : Jan 13 23:59:59 2019 GMT
+        Subject: CN=bookingbytes.com
+        Subject Public Key Info:
+            Public Key Algorithm: rsaEncryption
+                Public-Key: (2048 bit)
+                Modulus:
+                    00:c0:56:f7:51:23:2c:4b:8c:5d:f8:66:e5:83:ef:
+                    71:e4:d6:2f:a9:63:00:20:9f:8b:9e:11:cf:c3:da:
+                    2e:c9:d6:98:4c:d5:c3:d8:30:d2:f5:ca:1c:db:97:
+                    3e:91:15:98:d2:8c:e1:39:26:14:bb:f1:81:3a:df:
+                    f7:ae:87:e7:ac:38:62:89:12:cc:e8:0b:a7:50:dc:
+                    f9:eb:b0:9b:b3:af:58:27:47:fd:d9:09:c3:a3:26:
+                    d0:52:30:db:5c:1e:e3:45:35:bf:73:c5:61:47:64:
+                    88:cc:2f:a5:7a:8b:99:92:84:8c:c1:94:5a:6f:d0:
+                    44:d5:37:0a:27:85:9e:2e:c6:f7:b0:fe:50:04:65:
+                    35:16:d1:16:b3:05:86:0c:8b:3e:85:8b:fd:52:77:
+                    fb:cf:d0:4c:a9:85:e6:8a:41:08:6e:7d:ac:df:7e:
+                    9e:f4:a7:5f:75:98:61:d9:0e:e2:f7:61:f7:db:f7:
+                    55:62:79:c8:cf:cd:d6:7c:65:e4:0a:df:ce:51:bf:
+                    84:40:58:d7:68:d5:dd:90:fa:98:73:94:d3:9a:a9:
+                    59:28:c9:04:7a:85:58:63:99:31:48:72:41:ef:db:
+                    c1:4f:b2:9e:4b:fa:7d:71:dc:51:29:4c:0f:19:06:
+                    4a:b3:07:f4:82:de:db:cf:3c:32:9f:c3:4e:72:60:
+                    fb:9f
+                Exponent: 65537 (0x10001)
+        X509v3 extensions:
+            X509v3 Authority Key Identifier: 
+                keyid:7E:03:5A:65:41:6B:A7:7E:0A:E1:B8:9D:08:EA:1D:8E:1D:6A:C7:65
+
+            X509v3 Subject Key Identifier: 
+                68:1D:78:5E:F2:96:CB:D8:C1:C6:E0:0E:E0:5D:88:94:15:67:91:17
+            X509v3 Key Usage: critical
+                Digital Signature, Key Encipherment
+            X509v3 Basic Constraints: critical
+                CA:FALSE
+            X509v3 Extended Key Usage: 
+                TLS Web Server Authentication, TLS Web Client Authentication
+            X509v3 Certificate Policies: 
+                Policy: 1.3.6.1.4.1.6449.1.2.2.52
+                  CPS: https://secure.comodo.com/CPS
+                Policy: 2.23.140.1.2.1
+
+            X509v3 CRL Distribution Points: 
+
+                Full Name:
+                  URI:http://crl.comodoca.com/cPanelIncCertificationAuthority.crl
+
+            Authority Information Access: 
+                CA Issuers - URI:http://crt.comodoca.com/cPanelIncCertificationAuthority.crt
+                OCSP - URI:http://ocsp.comodoca.com
+
+            1.3.6.1.4.1.11129.2.4.2: 
+                ......v..K..u.`..Bi....f..~_.r....{.z......fu........G0E.!..f."..t..>....n.W..%2..kS..iZf].. !(f.N7...X.r...y....s..r.,..@s.<.v.t~..1.3..!..%OBp...^B ..75y..{.V...fu..2.....G0E.!..Q.s...S.~Q...>.2wIyIu\.D.N|...~. .?..\.r.V8..fT%.gm....Oj.....%.
+    Signature Algorithm: sha256WithRSAEncryption
+         5f:73:7c:95:20:06:03:97:17:92:d4:d3:b2:1e:9a:50:b0:cc:
+         fc:ed:a8:39:b3:89:5e:87:b1:8d:ee:2a:7b:f1:2f:3b:98:d9:
+         b7:a4:ae:08:67:2e:7a:bd:08:0a:a6:4a:6b:b5:76:4d:7c:31:
+         37:e5:7c:e5:e7:24:74:71:f3:be:3e:55:f6:89:38:03:cd:0c:
+         61:94:ec:74:19:da:98:c7:28:ae:83:11:5c:95:bc:10:f0:e2:
+         74:53:06:ba:91:44:cb:a4:1a:f1:84:78:2e:ff:cf:d6:7e:72:
+         35:a0:1a:06:f8:87:1c:db:d8:3f:4a:8f:c2:04:ae:3f:d2:22:
+         95:ce:ad:43:a0:c4:0e:42:57:8e:cd:6e:1a:a9:7f:48:7d:3a:
+         4a:f9:3a:75:1d:f7:bd:52:12:d6:d5:63:27:aa:d0:c3:46:60:
+         e0:ec:d2:4a:f3:73:b1:09:d6:12:ad:77:bd:46:05:5a:8f:07:
+         f3:54:5b:a8:8f:e5:ba:f9:ce:23:73:4c:1a:55:78:df:bb:21:
+         67:ee:91:e1:eb:85:c2:6c:da:23:c5:6c:96:00:c1:88:b7:3f:
+         f8:f3:18:ba:73:d8:74:f7:36:42:f8:d6:2e:bb:f4:74:13:bd:
+         c5:8f:02:1f:60:81:84:91:a3:e4:cd:96:1d:0a:3e:0e:e6:98:
+         4b:25:63:9d
+TLSv1: True
+
+TLSv1.2: True
+
+--------------------------------------------------------------------------------
+
+non-SNI Data:
+
+SANs:
+---------------
+ webdisk.bookingbytes.com
+bookingbytes.com
+www.bookingbytes.com
+webmail.bookingbytes.com
+mail.bookingbytes.com
+cpanel.bookingbytes.com
+---------------
+
+TLSv1.1: True
+
+Same as SNI Certificate
+TLSv1: True
+
+TLSv1.2: True
+
+[1;34m[#][0;0m Started collecting TLS data for bookingbytes.com
+[1;34m[#][0;0m Done collecting TLS data
+[1;32m[v][0;0m Supported Ciphers:
+|   TLSv1.0: 
+|     ciphers: 
+|       TLS_DHE_RSA_WITH_3DES_EDE_CBC_SHA (dh 2048) - C - [1;31mWEAK[0;0m
+|       TLS_DHE_RSA_WITH_AES_128_CBC_SHA (dh 2048) - A
+|       TLS_DHE_RSA_WITH_AES_256_CBC_SHA (dh 2048) - A
+|       TLS_ECDHE_RSA_WITH_3DES_EDE_CBC_SHA (secp256r1) - C - [1;31mWEAK[0;0m
+|       TLS_ECDHE_RSA_WITH_AES_128_CBC_SHA (secp256r1) - A
+|       TLS_ECDHE_RSA_WITH_AES_256_CBC_SHA (secp256r1) - A
+|       TLS_RSA_WITH_3DES_EDE_CBC_SHA (rsa 2048) - C - [1;31mWEAK[0;0m
+|       TLS_RSA_WITH_AES_128_CBC_SHA (rsa 2048) - A
+|       TLS_RSA_WITH_AES_256_CBC_SHA (rsa 2048) - A
+|     compressors: 
+|       NULL
+|     cipher preference: client
+|     warnings: 
+[1;31m|       64-bit block cipher 3DES vulnerable to SWEET32 attack[0;0m
+|   TLSv1.1: 
+|     ciphers: 
+|       TLS_DHE_RSA_WITH_3DES_EDE_CBC_SHA (dh 2048) - C - [1;31mWEAK[0;0m
+|       TLS_DHE_RSA_WITH_AES_128_CBC_SHA (dh 2048) - A
+|       TLS_DHE_RSA_WITH_AES_256_CBC_SHA (dh 2048) - A
+|       TLS_ECDHE_RSA_WITH_3DES_EDE_CBC_SHA (secp256r1) - C - [1;31mWEAK[0;0m
+|       TLS_ECDHE_RSA_WITH_AES_128_CBC_SHA (secp256r1) - A
+|       TLS_ECDHE_RSA_WITH_AES_256_CBC_SHA (secp256r1) - A
+|       TLS_RSA_WITH_3DES_EDE_CBC_SHA (rsa 2048) - C - [1;31mWEAK[0;0m
+|       TLS_RSA_WITH_AES_128_CBC_SHA (rsa 2048) - A
+|       TLS_RSA_WITH_AES_256_CBC_SHA (rsa 2048) - A
+|     compressors: 
+|       NULL
+|     cipher preference: client
+|     warnings: 
+[1;31m|       64-bit block cipher 3DES vulnerable to SWEET32 attack[0;0m
+|   TLSv1.2: 
+|     ciphers: 
+|       TLS_DHE_RSA_WITH_3DES_EDE_CBC_SHA (dh 2048) - C - [1;31mWEAK[0;0m
+|       TLS_DHE_RSA_WITH_AES_128_CBC_SHA (dh 2048) - A
+|       TLS_DHE_RSA_WITH_AES_128_CBC_SHA256 (dh 2048) - A
+|       TLS_DHE_RSA_WITH_AES_128_GCM_SHA256 (dh 2048) - A
+|       TLS_DHE_RSA_WITH_AES_256_CBC_SHA (dh 2048) - A
+|       TLS_DHE_RSA_WITH_AES_256_CBC_SHA256 (dh 2048) - A
+|       TLS_DHE_RSA_WITH_AES_256_GCM_SHA384 (dh 2048) - A
+|       TLS_ECDHE_RSA_WITH_3DES_EDE_CBC_SHA (secp256r1) - C - [1;31mWEAK[0;0m
+|       TLS_ECDHE_RSA_WITH_AES_128_CBC_SHA (secp256r1) - A
+|       TLS_ECDHE_RSA_WITH_AES_128_CBC_SHA256 (secp256r1) - A
+|       TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256 (secp256r1) - A
+|       TLS_ECDHE_RSA_WITH_AES_256_CBC_SHA (secp256r1) - A
+|       TLS_ECDHE_RSA_WITH_AES_256_CBC_SHA384 (secp256r1) - A
+|       TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384 (secp256r1) - A
+|       TLS_RSA_WITH_3DES_EDE_CBC_SHA (rsa 2048) - C - [1;31mWEAK[0;0m
+|       TLS_RSA_WITH_AES_128_CBC_SHA (rsa 2048) - A
+|       TLS_RSA_WITH_AES_128_CBC_SHA256 (rsa 2048) - A
+|       TLS_RSA_WITH_AES_128_GCM_SHA256 (rsa 2048) - A
+|       TLS_RSA_WITH_AES_256_CBC_SHA (rsa 2048) - A
+|       TLS_RSA_WITH_AES_256_CBC_SHA256 (rsa 2048) - A
+|       TLS_RSA_WITH_AES_256_GCM_SHA384 (rsa 2048) - A
+|     compressors: 
+|       NULL
+|     cipher preference: client
+|     warnings: 
+[1;31m|       64-bit block cipher 3DES vulnerable to SWEET32 attack[0;0m
+|_  least strength: C
+
+--------------------------------------------------------------------------------
+
+SNI Data:
+
+SANs:
+---------------
+ webdisk.bookingbytes.com
+cpanel.bookingbytes.com
+mail.bookingbytes.com
+www.bookingbytes.com
+bookingbytes.com
+webmail.bookingbytes.com
+---------------
+
+TLSv1: True
+
+TLSv1.2: True
+
+Certificate:
+    Data:
+        Version: 3 (0x2)
+        Serial Number:
+            66:46:59:49:b0:da:c4:39:81:3c:51:2d:96:25:19:5d
+    Signature Algorithm: sha256WithRSAEncryption
+        Issuer: C=US, ST=TX, L=Houston, O=cPanel, Inc., CN=cPanel, Inc. Certification Authority
+        Validity
+            Not Before: Oct 15 00:00:00 2018 GMT
+            Not After : Jan 13 23:59:59 2019 GMT
+        Subject: CN=bookingbytes.com
+        Subject Public Key Info:
+            Public Key Algorithm: rsaEncryption
+                Public-Key: (2048 bit)
+                Modulus:
+                    00:c0:56:f7:51:23:2c:4b:8c:5d:f8:66:e5:83:ef:
+                    71:e4:d6:2f:a9:63:00:20:9f:8b:9e:11:cf:c3:da:
+                    2e:c9:d6:98:4c:d5:c3:d8:30:d2:f5:ca:1c:db:97:
+                    3e:91:15:98:d2:8c:e1:39:26:14:bb:f1:81:3a:df:
+                    f7:ae:87:e7:ac:38:62:89:12:cc:e8:0b:a7:50:dc:
+                    f9:eb:b0:9b:b3:af:58:27:47:fd:d9:09:c3:a3:26:
+                    d0:52:30:db:5c:1e:e3:45:35:bf:73:c5:61:47:64:
+                    88:cc:2f:a5:7a:8b:99:92:84:8c:c1:94:5a:6f:d0:
+                    44:d5:37:0a:27:85:9e:2e:c6:f7:b0:fe:50:04:65:
+                    35:16:d1:16:b3:05:86:0c:8b:3e:85:8b:fd:52:77:
+                    fb:cf:d0:4c:a9:85:e6:8a:41:08:6e:7d:ac:df:7e:
+                    9e:f4:a7:5f:75:98:61:d9:0e:e2:f7:61:f7:db:f7:
+                    55:62:79:c8:cf:cd:d6:7c:65:e4:0a:df:ce:51:bf:
+                    84:40:58:d7:68:d5:dd:90:fa:98:73:94:d3:9a:a9:
+                    59:28:c9:04:7a:85:58:63:99:31:48:72:41:ef:db:
+                    c1:4f:b2:9e:4b:fa:7d:71:dc:51:29:4c:0f:19:06:
+                    4a:b3:07:f4:82:de:db:cf:3c:32:9f:c3:4e:72:60:
+                    fb:9f
+                Exponent: 65537 (0x10001)
+        X509v3 extensions:
+            X509v3 Authority Key Identifier: 
+                keyid:7E:03:5A:65:41:6B:A7:7E:0A:E1:B8:9D:08:EA:1D:8E:1D:6A:C7:65
+
+            X509v3 Subject Key Identifier: 
+                68:1D:78:5E:F2:96:CB:D8:C1:C6:E0:0E:E0:5D:88:94:15:67:91:17
+            X509v3 Key Usage: critical
+                Digital Signature, Key Encipherment
+            X509v3 Basic Constraints: critical
+                CA:FALSE
+            X509v3 Extended Key Usage: 
+                TLS Web Server Authentication, TLS Web Client Authentication
+            X509v3 Certificate Policies: 
+                Policy: 1.3.6.1.4.1.6449.1.2.2.52
+                  CPS: https://secure.comodo.com/CPS
+                Policy: 2.23.140.1.2.1
+
+            X509v3 CRL Distribution Points: 
+
+                Full Name:
+                  URI:http://crl.comodoca.com/cPanelIncCertificationAuthority.crl
+
+            Authority Information Access: 
+                CA Issuers - URI:http://crt.comodoca.com/cPanelIncCertificationAuthority.crt
+                OCSP - URI:http://ocsp.comodoca.com
+
+            1.3.6.1.4.1.11129.2.4.2: 
+                ......v..K..u.`..Bi....f..~_.r....{.z......fu........G0E.!..f."..t..>....n.W..%2..kS..iZf].. !(f.N7...X.r...y....s..r.,..@s.<.v.t~..1.3..!..%OBp...^B ..75y..{.V...fu..2.....G0E.!..Q.s...S.~Q...>.2wIyIu\.D.N|...~. .?..\.r.V8..fT%.gm....Oj.....%.
+    Signature Algorithm: sha256WithRSAEncryption
+         5f:73:7c:95:20:06:03:97:17:92:d4:d3:b2:1e:9a:50:b0:cc:
+         fc:ed:a8:39:b3:89:5e:87:b1:8d:ee:2a:7b:f1:2f:3b:98:d9:
+         b7:a4:ae:08:67:2e:7a:bd:08:0a:a6:4a:6b:b5:76:4d:7c:31:
+         37:e5:7c:e5:e7:24:74:71:f3:be:3e:55:f6:89:38:03:cd:0c:
+         61:94:ec:74:19:da:98:c7:28:ae:83:11:5c:95:bc:10:f0:e2:
+         74:53:06:ba:91:44:cb:a4:1a:f1:84:78:2e:ff:cf:d6:7e:72:
+         35:a0:1a:06:f8:87:1c:db:d8:3f:4a:8f:c2:04:ae:3f:d2:22:
+         95:ce:ad:43:a0:c4:0e:42:57:8e:cd:6e:1a:a9:7f:48:7d:3a:
+         4a:f9:3a:75:1d:f7:bd:52:12:d6:d5:63:27:aa:d0:c3:46:60:
+         e0:ec:d2:4a:f3:73:b1:09:d6:12:ad:77:bd:46:05:5a:8f:07:
+         f3:54:5b:a8:8f:e5:ba:f9:ce:23:73:4c:1a:55:78:df:bb:21:
+         67:ee:91:e1:eb:85:c2:6c:da:23:c5:6c:96:00:c1:88:b7:3f:
+         f8:f3:18:ba:73:d8:74:f7:36:42:f8:d6:2e:bb:f4:74:13:bd:
+         c5:8f:02:1f:60:81:84:91:a3:e4:cd:96:1d:0a:3e:0e:e6:98:
+         4b:25:63:9d
+TLSv1.1: True
+
+--------------------------------------------------------------------------------
+
+non-SNI Data:
+
+SANs:
+---------------
+ webdisk.bookingbytes.com
+cpanel.bookingbytes.com
+mail.bookingbytes.com
+www.bookingbytes.com
+bookingbytes.com
+webmail.bookingbytes.com
+---------------
+
+TLSv1: True
+
+TLSv1.2: True
+
+Same as SNI Certificate
+TLSv1.1: True
+

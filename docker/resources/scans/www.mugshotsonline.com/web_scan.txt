@@ -1,0 +1,4 @@
+[1;34m[#][0;0m Trying to collect www.mugshotsonline.com web application data
+[93m[!][0;0m Target does not seem to have an active web server on port: 443. No web application data will be gathered.
+[1;34m[#][0;0m Trying to collect www.mugshotsonline.com web application data
+[1;32m[v][0;0m Found robots.txt

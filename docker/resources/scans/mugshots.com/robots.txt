@@ -1,0 +1,29 @@
+User-agent: *
+Disallow: /gallery/item/
+
+User-agent: ia_archiver
+Disallow: /
+
+User-agent: grapeshot
+Disallow: /
+
+User-agent: *
+Disallow: /US-Counties/Florida/Polk-County-FL/Miliana-Noelle-Singh.21073756.html
+Disallow: /US-Counties/Florida/Okaloosa-County-FL/Shaun-Kirit-Ved.4440842.html
+Disallow: /US-Counties/Texas/Taylor-County-TX/Victor-Lynn-Lee.170079000.html
+Disallow: /US-Counties/Illinois/Cook-County-IL/Torranio-Holmes.141083416.html
+Disallow: /US-Counties/New-Mexico/Santa-Fe-County-NM/Leif-Christian-Hoover.163143487.html
+Disallow: /US-Counties/New-Jersey/Middlesex-County-NJ/Kumani-J-Drumright.8095952.html
+Disallow: /US-Counties/Florida/Orange-County-FL/Vishaan-Lutchman.170752469.html
+Disallow: /US-Counties/Texas/Hays-County-TX/Jewell-Anita-Maida.138490685.html
+Disallow: /US-Counties/Oregon/Deschutes-County-OR/Ryan-Cole-Mejaski.108803562.html
+Disallow: /US-Counties/Florida/Orange-County-FL/Ivangellys-Gonzalez.168826668.html
+Disallow: /US-Counties/Florida/Collier-County-FL/Troy-C-Boane.154953323.html
+Disallow: /US-Counties/Texas/Denton-County-TX/David-Aaron-Servello.150188516.html
+Disallow: /US-Counties/Florida/Miami-Dade-County-FL/Dessire-L-Tano.52597395.html
+Disallow: /US-Counties/Georgia/DeKalb-County-GA/Amparo-Murphy-Herndon.74993645.html
+Disallow: /US-Counties/Kentucky/Pike-County-KY/Daniel-S-Haskins.63183796.html
+Disallow: /US-Counties/Kentucky/Pike-County-KY/Daniel-S-Haskins.87477995.html
+Disallow: /US-Counties/Kentucky/Bourbon-County-KY/Daniel-S-Haskins.21340588.html
+Disallow: /US-Counties/Florida/Orange-County-FL/Mitra-Jahanmiry.57994586.html
+Disallow: /US-Counties/Texas/Hays-County-TX/Alex-Gregory-Mcmoran.157101964.html

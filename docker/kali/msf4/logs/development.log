@@ -1,0 +1,1011 @@
+  [1m[36m (3.8ms)[0m  [1mCREATE TABLE "schema_migrations" ("version" character varying NOT NULL) [0m
+  [1m[35m (1.4ms)[0m  CREATE UNIQUE INDEX  "unique_schema_migrations" ON "schema_migrations"  ("version")
+  [1m[36mActiveRecord::SchemaMigration Load (0.4ms)[0m  [1mSELECT "schema_migrations".* FROM "schema_migrations"[0m
+Migrating to CreateTables (0)
+  [1m[35m (0.6ms)[0m  BEGIN
+  [1m[36m (6.3ms)[0m  [1mCREATE TABLE "hosts" ("id" serial primary key, "created" timestamp, "address" character varying(16), "address6" character varying, "mac" character varying, "comm" character varying, "name" character varying, "state" character varying, "info" character varying(1024), "os_name" character varying, "os_flavor" character varying, "os_sp" character varying, "os_lang" character varying, "arch" character varying) [0m
+  [1m[35m (1.1ms)[0m  CREATE UNIQUE INDEX  "index_hosts_on_address" ON "hosts"  ("address")
+  [1m[36m (3.3ms)[0m  [1mCREATE TABLE "clients" ("id" serial primary key, "host_id" integer, "created" timestamp, "ua_string" character varying(1024) NOT NULL, "ua_name" character varying(64), "ua_ver" character varying(32)) [0m
+  [1m[35m (3.2ms)[0m  CREATE TABLE "services" ("id" serial primary key, "host_id" integer, "created" timestamp, "port" integer NOT NULL, "proto" character varying(16) NOT NULL, "state" character varying, "name" character varying, "info" character varying(1024)) 
+  [1m[36m (3.5ms)[0m  [1mCREATE TABLE "vulns" ("id" serial primary key, "host_id" integer, "service_id" integer, "created" timestamp, "name" character varying, "data" text) [0m
+  [1m[35m (2.9ms)[0m  CREATE TABLE "refs" ("id" serial primary key, "ref_id" integer, "created" timestamp, "name" character varying(512)) 
+  [1m[36m (0.6ms)[0m  [1mCREATE TABLE "vulns_refs" ("ref_id" integer, "vuln_id" integer) [0m
+  [1m[35m (3.0ms)[0m  CREATE TABLE "notes" ("id" serial primary key, "host_id" integer, "created" timestamp, "ntype" character varying(512), "data" text) 
+  [1m[36mSQL (0.4ms)[0m  [1mINSERT INTO "schema_migrations" ("version") VALUES ($1)[0m  [["version", "0"]]
+  [1m[35m (1.1ms)[0m  COMMIT
+Migrating to AddWmapTables (1)
+  [1m[36m (0.8ms)[0m  [1mBEGIN[0m
+  [1m[35m (2.8ms)[0m  CREATE TABLE "wmap_targets" ("id" serial primary key, "host" character varying, "address" character varying(16), "address6" character varying, "port" integer, "ssl" integer, "selected" integer) 
+  [1m[36m (3.1ms)[0m  [1mCREATE TABLE "wmap_requests" ("id" serial primary key, "host" character varying, "address" character varying(16), "address6" character varying, "port" integer, "ssl" integer, "meth" character varying(32), "path" text, "headers" text, "query" text, "body" text, "respcode" character varying(16), "resphead" text, "response" text, "created" timestamp) [0m
+  [1m[35mSQL (0.4ms)[0m  INSERT INTO "schema_migrations" ("version") VALUES ($1)  [["version", "1"]]
+  [1m[36m (0.6ms)[0m  [1mCOMMIT[0m
+Migrating to AddWorkspaces (2)
+  [1m[35m (0.3ms)[0m  BEGIN
+  [1m[36m (2.9ms)[0m  [1mCREATE TABLE "workspaces" ("id" serial primary key, "name" character varying, "created_at" timestamp NOT NULL, "updated_at" timestamp NOT NULL) [0m
+  [1m[35m (0.4ms)[0m  ALTER TABLE "hosts" ADD "workspace_id" integer
+  [1m[36m (0.6ms)[0m  [1mDROP INDEX "index_hosts_on_address"[0m
+  [1m[35mSQL (0.2ms)[0m  INSERT INTO "schema_migrations" ("version") VALUES ($1)  [["version", "2"]]
+  [1m[36m (1.3ms)[0m  [1mCOMMIT[0m
+Migrating to MoveNotes (3)
+  [1m[35m (0.4ms)[0m  BEGIN
+  [1m[36m (0.4ms)[0m  [1mALTER TABLE "notes" DROP "host_id"[0m
+  [1m[35m (3.4ms)[0m  ALTER TABLE "notes" ADD "workspace_id" integer DEFAULT 1 NOT NULL
+  [1m[36m (0.3ms)[0m  [1mALTER TABLE "notes" ADD "service_id" integer[0m
+  [1m[35m (0.2ms)[0m  ALTER TABLE "notes" ADD "host_id" integer
+  [1m[36mSQL (0.2ms)[0m  [1mINSERT INTO "schema_migrations" ("version") VALUES ($1)[0m  [["version", "3"]]
+  [1m[35m (1.1ms)[0m  COMMIT
+Migrating to AddEventsTable (4)
+  [1m[36m (0.3ms)[0m  [1mBEGIN[0m
+  [1m[35m (3.1ms)[0m  CREATE TABLE "events" ("id" serial primary key, "workspace_id" integer, "host_id" integer, "created_at" timestamp, "user" character varying, "name" character varying, "info" character varying) 
+  [1m[36mSQL (0.2ms)[0m  [1mINSERT INTO "schema_migrations" ("version") VALUES ($1)[0m  [["version", "4"]]
+  [1m[35m (0.6ms)[0m  COMMIT
+Migrating to ExpandInfo (5)
+  [1m[36m (0.3ms)[0m  [1mBEGIN[0m
+  [1m[35m (0.3ms)[0m  ALTER TABLE "events" DROP "info"
+  [1m[36m (0.3ms)[0m  [1mALTER TABLE "events" ADD "info" character varying(4096)[0m
+  [1m[35m (0.3ms)[0m  ALTER TABLE "notes" DROP "data"
+  [1m[36m (0.2ms)[0m  [1mALTER TABLE "notes" ADD "data" character varying(4096)[0m
+  [1m[35m (0.3ms)[0m  ALTER TABLE "vulns" DROP "data"
+  [1m[36m (0.2ms)[0m  [1mALTER TABLE "vulns" ADD "data" character varying(4096)[0m
+  [1m[35m (0.2ms)[0m  ALTER TABLE "hosts" DROP "info"
+  [1m[36m (0.2ms)[0m  [1mALTER TABLE "hosts" ADD "info" character varying(4096)[0m
+  [1m[35m (0.3ms)[0m  ALTER TABLE "services" DROP "info"
+  [1m[36m (0.2ms)[0m  [1mALTER TABLE "services" ADD "info" character varying(4096)[0m
+  [1m[35mSQL (0.2ms)[0m  INSERT INTO "schema_migrations" ("version") VALUES ($1)  [["version", "5"]]
+  [1m[36m (0.5ms)[0m  [1mCOMMIT[0m
+Migrating to AddTimestamps (6)
+  [1m[35m (0.2ms)[0m  BEGIN
+  [1m[36m (0.3ms)[0m  [1mALTER TABLE "clients" RENAME COLUMN "created" TO "created_at"[0m
+  [1m[35m (0.2ms)[0m  ALTER TABLE "hosts" RENAME COLUMN "created" TO "created_at"
+  [1m[36m (0.3ms)[0m  [1mALTER TABLE "notes" RENAME COLUMN "created" TO "created_at"[0m
+  [1m[35m (0.2ms)[0m  ALTER TABLE "refs" RENAME COLUMN "created" TO "created_at"
+  [1m[36m (0.3ms)[0m  [1mALTER TABLE "services" RENAME COLUMN "created" TO "created_at"[0m
+  [1m[35m (0.2ms)[0m  ALTER TABLE "vulns" RENAME COLUMN "created" TO "created_at"
+  [1m[36m (0.2ms)[0m  [1mALTER TABLE "wmap_requests" RENAME COLUMN "created" TO "created_at"[0m
+  [1m[35m (0.3ms)[0m  ALTER TABLE "wmap_targets" ADD "created_at" timestamp
+  [1m[36m (0.2ms)[0m  [1mALTER TABLE "clients" ADD "updated_at" timestamp[0m
+  [1m[35m (0.2ms)[0m  ALTER TABLE "events" ADD "updated_at" timestamp
+  [1m[36m (0.2ms)[0m  [1mALTER TABLE "hosts" ADD "updated_at" timestamp[0m
+  [1m[35m (0.2ms)[0m  ALTER TABLE "notes" ADD "updated_at" timestamp
+  [1m[36m (0.2ms)[0m  [1mALTER TABLE "refs" ADD "updated_at" timestamp[0m
+  [1m[35m (0.2ms)[0m  ALTER TABLE "services" ADD "updated_at" timestamp
+  [1m[36m (0.2ms)[0m  [1mALTER TABLE "vulns" ADD "updated_at" timestamp[0m
+  [1m[35m (0.2ms)[0m  ALTER TABLE "wmap_requests" ADD "updated_at" timestamp
+  [1m[36m (0.2ms)[0m  [1mALTER TABLE "wmap_targets" ADD "updated_at" timestamp[0m
+  [1m[35mSQL (0.2ms)[0m  INSERT INTO "schema_migrations" ("version") VALUES ($1)  [["version", "6"]]
+  [1m[36m (0.5ms)[0m  [1mCOMMIT[0m
+Migrating to AddLoots (7)
+  [1m[35m (0.2ms)[0m  BEGIN
+  [1m[36m (3.1ms)[0m  [1mCREATE TABLE "loots" ("id" serial primary key, "workspace_id" integer DEFAULT 1 NOT NULL, "host_id" integer, "service_id" integer, "ltype" character varying(512), "path" character varying(1024), "data" text, "created_at" timestamp NOT NULL, "updated_at" timestamp NOT NULL) [0m
+  [1m[35mSQL (0.2ms)[0m  INSERT INTO "schema_migrations" ("version") VALUES ($1)  [["version", "7"]]
+  [1m[36m (0.5ms)[0m  [1mCOMMIT[0m
+Migrating to CreateUsers (8)
+  [1m[35m (0.3ms)[0m  BEGIN
+  [1m[36m (2.9ms)[0m  [1mCREATE TABLE "users" ("id" serial primary key, "username" character varying, "crypted_password" character varying, "password_salt" character varying, "persistence_token" character varying, "created_at" timestamp NOT NULL, "updated_at" timestamp NOT NULL) [0m
+  [1m[35mSQL (0.2ms)[0m  INSERT INTO "schema_migrations" ("version") VALUES ($1)  [["version", "8"]]
+  [1m[36m (0.7ms)[0m  [1mCOMMIT[0m
+Migrating to AddLootsCtype (9)
+  [1m[35m (0.3ms)[0m  BEGIN
+  [1m[36m (0.3ms)[0m  [1mALTER TABLE "loots" ADD "content_type" character varying[0m
+  [1m[35mSQL (0.2ms)[0m  INSERT INTO "schema_migrations" ("version") VALUES ($1)  [["version", "9"]]
+  [1m[36m (0.4ms)[0m  [1mCOMMIT[0m
+Migrating to AddAlertFields (10)
+  [1m[35m (0.2ms)[0m  BEGIN
+  [1m[36m (0.3ms)[0m  [1mALTER TABLE "notes" ADD "critical" boolean[0m
+  [1m[35m (0.2ms)[0m  ALTER TABLE "notes" ADD "seen" boolean
+  [1m[36m (0.2ms)[0m  [1mALTER TABLE "events" ADD "critical" boolean[0m
+  [1m[35m (0.2ms)[0m  ALTER TABLE "events" ADD "seen" boolean
+  [1m[36mSQL (0.2ms)[0m  [1mINSERT INTO "schema_migrations" ("version") VALUES ($1)[0m  [["version", "10"]]
+  [1m[35m (0.4ms)[0m  COMMIT
+Migrating to AddReports (11)
+  [1m[36m (0.2ms)[0m  [1mBEGIN[0m
+  [1m[35m (3.2ms)[0m  CREATE TABLE "reports" ("id" serial primary key, "workspace_id" integer DEFAULT 1 NOT NULL, "created_by" character varying, "rtype" character varying, "path" character varying(1024), "options" text, "created_at" timestamp NOT NULL, "updated_at" timestamp NOT NULL) 
+  [1m[36mSQL (0.2ms)[0m  [1mINSERT INTO "schema_migrations" ("version") VALUES ($1)[0m  [["version", "11"]]
+  [1m[35m (0.5ms)[0m  COMMIT
+Migrating to AddTasks (12)
+  [1m[36m (0.4ms)[0m  [1mBEGIN[0m
+  [1m[35m (3.7ms)[0m  CREATE TABLE "tasks" ("id" serial primary key, "workspace_id" integer DEFAULT 1 NOT NULL, "created_by" character varying, "module" character varying, "completed_at" timestamp, "path" character varying(1024), "info" character varying, "description" character varying, "progress" integer, "options" text, "error" text, "created_at" timestamp NOT NULL, "updated_at" timestamp NOT NULL) 
+  [1m[36mSQL (0.2ms)[0m  [1mINSERT INTO "schema_migrations" ("version") VALUES ($1)[0m  [["version", "12"]]
+  [1m[35m (0.5ms)[0m  COMMIT
+Migrating to AddTasksResult (13)
+  [1m[36m (0.3ms)[0m  [1mBEGIN[0m
+  [1m[35m (0.3ms)[0m  ALTER TABLE "tasks" ADD "result" text
+  [1m[36mSQL (0.2ms)[0m  [1mINSERT INTO "schema_migrations" ("version") VALUES ($1)[0m  [["version", "13"]]
+  [1m[35m (0.4ms)[0m  COMMIT
+Migrating to AddLootsFields (14)
+  [1m[36m (0.2ms)[0m  [1mBEGIN[0m
+  [1m[35m (0.3ms)[0m  ALTER TABLE "loots" ADD "name" text
+  [1m[36m (0.3ms)[0m  [1mALTER TABLE "loots" ADD "info" text[0m
+  [1m[35mSQL (0.2ms)[0m  INSERT INTO "schema_migrations" ("version") VALUES ($1)  [["version", "14"]]
+  [1m[36m (0.4ms)[0m  [1mCOMMIT[0m
+Migrating to RenameUser (15)
+  [1m[35m (0.2ms)[0m  BEGIN
+  [1m[36m (0.3ms)[0m  [1mALTER TABLE "events" DROP "user"[0m
+  [1m[35m (0.2ms)[0m  ALTER TABLE "events" ADD "username" character varying
+  [1m[36mSQL (0.2ms)[0m  [1mINSERT INTO "schema_migrations" ("version") VALUES ($1)[0m  [["version", "15"]]
+  [1m[35m (0.4ms)[0m  COMMIT
+Migrating to AddHostPurpose (16)
+  [1m[36m (0.2ms)[0m  [1mBEGIN[0m
+  [1m[35m (0.3ms)[0m  ALTER TABLE "hosts" ADD "purpose" text
+  [1m[36mSQL (0.2ms)[0m  [1mINSERT INTO "schema_migrations" ("version") VALUES ($1)[0m  [["version", "16"]]
+  [1m[35m (0.4ms)[0m  COMMIT
+Migrating to ExpandInfo2 (17)
+  [1m[36m (0.2ms)[0m  [1mBEGIN[0m
+  [1m[35m (0.3ms)[0m  ALTER TABLE "events" DROP "info"
+  [1m[36m (0.2ms)[0m  [1mALTER TABLE "events" ADD "info" character varying(65536)[0m
+  [1m[35m (0.3ms)[0m  ALTER TABLE "notes" DROP "data"
+  [1m[36m (0.2ms)[0m  [1mALTER TABLE "notes" ADD "data" character varying(65536)[0m
+  [1m[35m (0.3ms)[0m  ALTER TABLE "vulns" DROP "data"
+  [1m[36m (0.2ms)[0m  [1mALTER TABLE "vulns" ADD "data" character varying(65536)[0m
+  [1m[35m (0.3ms)[0m  ALTER TABLE "hosts" DROP "info"
+  [1m[36m (0.2ms)[0m  [1mALTER TABLE "hosts" ADD "info" character varying(65536)[0m
+  [1m[35m (0.3ms)[0m  ALTER TABLE "services" DROP "info"
+  [1m[36m (0.2ms)[0m  [1mALTER TABLE "services" ADD "info" character varying(65536)[0m
+  [1m[35mSQL (0.2ms)[0m  INSERT INTO "schema_migrations" ("version") VALUES ($1)  [["version", "17"]]
+  [1m[36m (0.4ms)[0m  [1mCOMMIT[0m
+Migrating to AddWorkspaceUserInfo (18)
+  [1m[35m (0.2ms)[0m  BEGIN
+  [1m[36m (0.3ms)[0m  [1mALTER TABLE "workspaces" ADD "boundary" character varying(4096)[0m
+  [1m[35m (0.2ms)[0m  ALTER TABLE "users" ADD "fullname" character varying
+  [1m[36m (0.2ms)[0m  [1mALTER TABLE "users" ADD "email" character varying[0m
+  [1m[35m (0.2ms)[0m  ALTER TABLE "users" ADD "phone" character varying
+  [1m[36m (0.2ms)[0m  [1mALTER TABLE "users" ADD "company" character varying[0m
+  [1m[35mSQL (0.2ms)[0m  INSERT INTO "schema_migrations" ("version") VALUES ($1)  [["version", "18"]]
+  [1m[36m (0.4ms)[0m  [1mCOMMIT[0m
+Migrating to AddWorkspaceDesc (19)
+  [1m[35m (0.2ms)[0m  BEGIN
+  [1m[36m (0.3ms)[0m  [1mALTER TABLE "workspaces" ADD "description" character varying(4096)[0m
+  [1m[35m (0.3ms)[0m  ALTER TABLE "hosts" ADD "comments" character varying(4096)
+  [1m[36mSQL (0.2ms)[0m  [1mINSERT INTO "schema_migrations" ("version") VALUES ($1)[0m  [["version", "19"]]
+  [1m[35m (0.4ms)[0m  COMMIT
+Migrating to AddUserPreferences (20)
+  [1m[36m (0.2ms)[0m  [1mBEGIN[0m
+  [1m[35m (0.3ms)[0m  ALTER TABLE "users" ADD "prefs" character varying(524288)
+  [1m[36mSQL (0.2ms)[0m  [1mINSERT INTO "schema_migrations" ("version") VALUES ($1)[0m  [["version", "20"]]
+  [1m[35m (0.4ms)[0m  COMMIT
+Migrating to StandardizeInfoAndData (21)
+  [1m[36m (0.2ms)[0m  [1mBEGIN[0m
+  [1m[35m (0.3ms)[0m  ALTER TABLE "vulns" DROP "data"
+  [1m[36m (0.3ms)[0m  [1mALTER TABLE "vulns" ADD "info" character varying(65536)[0m
+  [1m[35mSQL (0.2ms)[0m  INSERT INTO "schema_migrations" ("version") VALUES ($1)  [["version", "21"]]
+  [1m[36m (0.4ms)[0m  [1mCOMMIT[0m
+Migrating to EnlargeEventInfo (22)
+  [1m[35m (0.2ms)[0m  BEGIN
+  [1m[36m (0.3ms)[0m  [1mALTER TABLE "events" ALTER COLUMN "info" TYPE text[0m
+  [1m[35mSQL (0.2ms)[0m  INSERT INTO "schema_migrations" ("version") VALUES ($1)  [["version", "22"]]
+  [1m[36m (0.4ms)[0m  [1mCOMMIT[0m
+Migrating to AddReportDownloadedAt (23)
+  [1m[35m (0.2ms)[0m  BEGIN
+  [1m[36m (0.3ms)[0m  [1mALTER TABLE "reports" ADD "downloaded_at" timestamp[0m
+  [1m[35mSQL (0.2ms)[0m  INSERT INTO "schema_migrations" ("version") VALUES ($1)  [["version", "23"]]
+  [1m[36m (0.4ms)[0m  [1mCOMMIT[0m
+Migrating to ConvertServiceInfoToText (24)
+  [1m[35m (0.2ms)[0m  BEGIN
+  [1m[36m (0.3ms)[0m  [1mALTER TABLE "services" ALTER COLUMN "info" TYPE text[0m
+  [1m[35mSQL (0.2ms)[0m  INSERT INTO "schema_migrations" ("version") VALUES ($1)  [["version", "24"]]
+  [1m[36m (0.4ms)[0m  [1mCOMMIT[0m
+Migrating to AddUserAdmin (25)
+  [1m[35m (0.2ms)[0m  BEGIN
+  [1m[36m (3.2ms)[0m  [1mALTER TABLE "users" ADD "admin" boolean DEFAULT 't'[0m
+  [1m[35m (0.6ms)[0m  CREATE TABLE "project_members" ("workspace_id" integer NOT NULL, "user_id" integer NOT NULL) 
+  [1m[36mSQL (0.2ms)[0m  [1mINSERT INTO "schema_migrations" ("version") VALUES ($1)[0m  [["version", "25"]]
+  [1m[35m (1.1ms)[0m  COMMIT
+Migrating to AddCredsTable (26)
+  [1m[36m (0.3ms)[0m  [1mBEGIN[0m
+  [1m[35m (3.0ms)[0m  CREATE TABLE "creds" ("id" serial primary key, "service_id" integer NOT NULL, "created_at" timestamp NOT NULL, "updated_at" timestamp NOT NULL, "user" character varying(2048), "pass" character varying(4096), "active" boolean DEFAULT 't', "proof" character varying(4096), "ptype" character varying(16), "source_id" integer, "source_type" character varying) 
+  [1m[36mSQL (0.2ms)[0m  [1mINSERT INTO "schema_migrations" ("version") VALUES ($1)[0m  [["version", "26"]]
+  [1m[35m (0.5ms)[0m  COMMIT
+Migrating to MigrateCredData (20100819123300)
+  [1m[36m (0.3ms)[0m  [1mBEGIN[0m
+  [1m[35mMdm::Note Load (0.5ms)[0m  SELECT "notes".* FROM "notes"
+  [1m[36mMdm::Note Load (0.3ms)[0m  [1mSELECT "notes".* FROM "notes"[0m
+  [1m[35mSQL (0.2ms)[0m  INSERT INTO "schema_migrations" ("version") VALUES ($1)  [["version", "20100819123300"]]
+  [1m[36m (0.4ms)[0m  [1mCOMMIT[0m
+Migrating to AddExploitedTable (20100824151500)
+  [1m[35m (0.2ms)[0m  BEGIN
+  [1m[36m (3.0ms)[0m  [1mCREATE TABLE "exploited_hosts" ("id" serial primary key, "host_id" integer NOT NULL, "service_id" integer, "session_uuid" character varying(8), "name" character varying(2048), "payload" character varying(2048), "created_at" timestamp NOT NULL, "updated_at" timestamp NOT NULL) [0m
+  [1m[35mSQL (0.2ms)[0m  INSERT INTO "schema_migrations" ("version") VALUES ($1)  [["version", "20100824151500"]]
+  [1m[36m (0.6ms)[0m  [1mCOMMIT[0m
+Migrating to AddOwnerToWorkspaces (20100908001428)
+  [1m[35m (0.3ms)[0m  BEGIN
+  [1m[36m (0.4ms)[0m  [1mALTER TABLE "workspaces" ADD "owner_id" integer[0m
+  [1m[35mSQL (0.2ms)[0m  INSERT INTO "schema_migrations" ("version") VALUES ($1)  [["version", "20100908001428"]]
+  [1m[36m (0.4ms)[0m  [1mCOMMIT[0m
+Migrating to AddReportTemplates (20100911122000)
+  [1m[35m (0.2ms)[0m  BEGIN
+  [1m[36m (3.1ms)[0m  [1mCREATE TABLE "report_templates" ("id" serial primary key, "workspace_id" integer DEFAULT 1 NOT NULL, "created_by" character varying, "path" character varying(1024), "name" text, "created_at" timestamp NOT NULL, "updated_at" timestamp NOT NULL) [0m
+  [1m[35mSQL (0.2ms)[0m  INSERT INTO "schema_migrations" ("version") VALUES ($1)  [["version", "20100911122000"]]
+  [1m[36m (0.4ms)[0m  [1mCOMMIT[0m
+Migrating to RequireAdminFlag (20100916151530)
+  [1m[35m (0.3ms)[0m  BEGIN
+  [1m[36mSQL (0.4ms)[0m  [1mUPDATE "users" SET "admin" = NULL WHERE "users"."admin" = $1[0m  [["admin", "t"]]
+  [1m[35m (1.0ms)[0m  ALTER TABLE "users" ALTER COLUMN "admin" TYPE boolean
+  [1m[36m (0.3ms)[0m  [1mALTER TABLE "users" ALTER COLUMN "admin" SET DEFAULT 't'[0m
+  [1m[35m (0.3ms)[0m  UPDATE "users" SET "admin"='t' WHERE "admin" IS NULL
+  [1m[36m (0.2ms)[0m  [1mALTER TABLE "users" ALTER "admin" SET NOT NULL[0m
+  [1m[35mSQL (0.2ms)[0m  INSERT INTO "schema_migrations" ("version") VALUES ($1)  [["version", "20100916151530"]]
+  [1m[36m (0.4ms)[0m  [1mCOMMIT[0m
+Migrating to AddCampaignsAndTemplates (20100916175000)
+  [1m[35m (0.2ms)[0m  BEGIN
+  [1m[36m (3.0ms)[0m  [1mCREATE TABLE "campaigns" ("id" serial primary key, "workspace_id" integer NOT NULL, "name" character varying(512), "prefs" text, "status" integer DEFAULT 0, "started_at" timestamp, "created_at" timestamp NOT NULL, "updated_at" timestamp NOT NULL) [0m
+  [1m[35m (3.0ms)[0m  CREATE TABLE "email_templates" ("id" serial primary key, "name" character varying(512), "subject" character varying(1024), "body" text, "parent_id" integer, "campaign_id" integer) 
+  [1m[36m (2.9ms)[0m  [1mCREATE TABLE "attachments" ("id" serial primary key, "name" character varying(512), "data" bytea, "content_type" character varying(512), "inline" boolean DEFAULT 't' NOT NULL, "zip" boolean DEFAULT 'f' NOT NULL) [0m
+  [1m[35m (0.6ms)[0m  CREATE TABLE "attachments_email_templates" ("attachment_id" integer, "email_template_id" integer) 
+  [1m[36m (2.9ms)[0m  [1mCREATE TABLE "email_addresses" ("id" serial primary key, "campaign_id" integer NOT NULL, "first_name" character varying(512), "last_name" character varying(512), "address" character varying(512), "sent" boolean DEFAULT 'f' NOT NULL, "clicked_at" timestamp) [0m
+  [1m[35m (2.9ms)[0m  CREATE TABLE "web_templates" ("id" serial primary key, "name" character varying(512), "title" character varying(512), "body" character varying(524288), "campaign_id" integer) 
+  [1m[36mSQL (0.2ms)[0m  [1mINSERT INTO "schema_migrations" ("version") VALUES ($1)[0m  [["version", "20100916175000"]]
+  [1m[35m (0.8ms)[0m  COMMIT
+Migrating to AddGenerateExeColumn (20100920012100)
+  [1m[36m (0.6ms)[0m  [1mBEGIN[0m
+  [1m[35m (2.9ms)[0m  ALTER TABLE "email_templates" ADD "generate_exe" boolean DEFAULT 'f' NOT NULL
+  [1m[36mSQL (0.2ms)[0m  [1mINSERT INTO "schema_migrations" ("version") VALUES ($1)[0m  [["version", "20100920012100"]]
+  [1m[35m (1.2ms)[0m  COMMIT
+Migrating to AddTemplatePrefs (20100926214000)
+  [1m[36m (0.3ms)[0m  [1mBEGIN[0m
+  [1m[35m (0.5ms)[0m  ALTER TABLE "email_templates" DROP "generate_exe"
+  [1m[36m (0.2ms)[0m  [1mALTER TABLE "email_templates" ADD "prefs" text[0m
+  [1m[35m (0.2ms)[0m  ALTER TABLE "web_templates" ADD "prefs" text
+  [1m[36mSQL (0.2ms)[0m  [1mINSERT INTO "schema_migrations" ("version") VALUES ($1)[0m  [["version", "20100926214000"]]
+  [1m[35m (0.4ms)[0m  COMMIT
+Migrating to AddWebTables (20101001000000)
+  [1m[36m (0.2ms)[0m  [1mBEGIN[0m
+  [1m[35m (2.8ms)[0m  CREATE TABLE "web_sites" ("id" serial primary key, "service_id" integer NOT NULL, "created_at" timestamp NOT NULL, "updated_at" timestamp NOT NULL, "vhost" character varying(2048), "comments" text, "options" text) 
+  [1m[36m (2.9ms)[0m  [1mCREATE TABLE "web_pages" ("id" serial primary key, "web_site_id" integer NOT NULL, "created_at" timestamp NOT NULL, "updated_at" timestamp NOT NULL, "path" text, "query" text, "code" integer NOT NULL, "cookie" text, "auth" text, "ctype" text, "mtime" timestamp, "location" text, "body" text, "headers" text) [0m
+  [1m[35m (3.0ms)[0m  CREATE TABLE "web_forms" ("id" serial primary key, "web_site_id" integer NOT NULL, "created_at" timestamp NOT NULL, "updated_at" timestamp NOT NULL, "path" text, "method" character varying(1024), "params" text) 
+  [1m[36m (3.5ms)[0m  [1mCREATE TABLE "web_vulns" ("id" serial primary key, "web_site_id" integer NOT NULL, "created_at" timestamp NOT NULL, "updated_at" timestamp NOT NULL, "path" text, "method" character varying(1024), "params" text, "pname" text, "proof" text, "risk" integer, "name" character varying(1024)) [0m
+  [1m[35mSQL (0.2ms)[0m  INSERT INTO "schema_migrations" ("version") VALUES ($1)  [["version", "20101001000000"]]
+  [1m[36m (0.8ms)[0m  [1mCOMMIT[0m
+Migrating to AddQuery (20101002000000)
+  [1m[35m (0.5ms)[0m  BEGIN
+  [1m[36m (0.3ms)[0m  [1mALTER TABLE "web_forms" ADD "query" text[0m
+  [1m[35m (0.2ms)[0m  ALTER TABLE "web_vulns" ADD "query" text
+  [1m[36mSQL (0.2ms)[0m  [1mINSERT INTO "schema_migrations" ("version") VALUES ($1)[0m  [["version", "20101002000000"]]
+  [1m[35m (0.4ms)[0m  COMMIT
+Migrating to AddVulnInfo (20101007000000)
+  [1m[36m (0.2ms)[0m  [1mBEGIN[0m
+  [1m[35m (0.3ms)[0m  ALTER TABLE "web_vulns" ADD "category" text
+  [1m[36m (0.2ms)[0m  [1mALTER TABLE "web_vulns" ADD "confidence" text[0m
+  [1m[35m (0.2ms)[0m  ALTER TABLE "web_vulns" ADD "description" text
+  [1m[36m (0.2ms)[0m  [1mALTER TABLE "web_vulns" ADD "blame" text[0m
+  [1m[35mSQL (0.2ms)[0m  INSERT INTO "schema_migrations" ("version") VALUES ($1)  [["version", "20101007000000"]]
+  [1m[36m (0.4ms)[0m  [1mCOMMIT[0m
+Migrating to AddClientsToCampaigns (20101008111800)
+  [1m[35m (0.2ms)[0m  BEGIN
+  [1m[36m (0.3ms)[0m  [1mALTER TABLE "clients" ADD "campaign_id" integer[0m
+  [1m[35mSQL (0.2ms)[0m  INSERT INTO "schema_migrations" ("version") VALUES ($1)  [["version", "20101008111800"]]
+  [1m[36m (0.3ms)[0m  [1mCOMMIT[0m
+Migrating to AddCampaignAttachments (20101009023300)
+  [1m[35m (0.2ms)[0m  BEGIN
+  [1m[36m (0.3ms)[0m  [1mALTER TABLE "attachments" ADD "campaign_id" integer[0m
+  [1m[35mSQL (0.2ms)[0m  INSERT INTO "schema_migrations" ("version") VALUES ($1)  [["version", "20101009023300"]]
+  [1m[36m (0.4ms)[0m  [1mCOMMIT[0m
+Migrating to AddImportedCreds (20101104135100)
+  [1m[35m (0.2ms)[0m  BEGIN
+  [1m[36m (3.1ms)[0m  [1mCREATE TABLE "imported_creds" ("id" serial primary key, "workspace_id" integer DEFAULT 1 NOT NULL, "user" character varying(512), "pass" character varying(512), "ptype" character varying(16) DEFAULT 'password') [0m
+  [1m[35mSQL (0.3ms)[0m  INSERT INTO "schema_migrations" ("version") VALUES ($1)  [["version", "20101104135100"]]
+  [1m[36m (0.5ms)[0m  [1mCOMMIT[0m
+Migrating to FixWebTables (20101203000000)
+  [1m[35m (0.3ms)[0m  BEGIN
+  [1m[36m (0.3ms)[0m  [1mALTER TABLE "web_pages" ALTER COLUMN "path" TYPE text[0m
+  [1m[35m (0.2ms)[0m  ALTER TABLE "web_pages" ALTER COLUMN "query" TYPE text
+  [1m[36m (0.2ms)[0m  [1mALTER TABLE "web_pages" ALTER COLUMN "cookie" TYPE text[0m
+  [1m[35m (0.2ms)[0m  ALTER TABLE "web_pages" ALTER COLUMN "auth" TYPE text
+  [1m[36m (0.2ms)[0m  [1mALTER TABLE "web_pages" ALTER COLUMN "ctype" TYPE text[0m
+  [1m[35m (0.3ms)[0m  ALTER TABLE "web_pages" ALTER COLUMN "location" TYPE text
+  [1m[36m (0.3ms)[0m  [1mALTER TABLE "web_pages" ALTER COLUMN "path" TYPE text[0m
+  [1m[35m (0.3ms)[0m  ALTER TABLE "web_vulns" ALTER COLUMN "path" TYPE text
+  [1m[36m (0.2ms)[0m  [1mALTER TABLE "web_vulns" ALTER COLUMN "pname" TYPE text[0m
+  [1m[35m (0.4ms)[0m  ALTER TABLE "web_pages" ADD "request" text
+  [1m[36m (0.3ms)[0m  [1mALTER TABLE "web_vulns" ADD "request" text[0m
+  [1m[35mSQL (0.2ms)[0m  INSERT INTO "schema_migrations" ("version") VALUES ($1)  [["version", "20101203000000"]]
+  [1m[36m (0.3ms)[0m  [1mCOMMIT[0m
+Migrating to ExpandHostComment (20101203000001)
+  [1m[35m (0.2ms)[0m  BEGIN
+  [1m[36m (0.3ms)[0m  [1mALTER TABLE "hosts" ALTER COLUMN "comments" TYPE text[0m
+  [1m[35mSQL (0.2ms)[0m  INSERT INTO "schema_migrations" ("version") VALUES ($1)  [["version", "20101203000001"]]
+  [1m[36m (0.3ms)[0m  [1mCOMMIT[0m
+Migrating to AddLimitToNetworkToWorkspaces (20101206212033)
+  [1m[35m (0.2ms)[0m  BEGIN
+  [1m[36m (3.7ms)[0m  [1mALTER TABLE "workspaces" ADD "limit_to_network" boolean DEFAULT 'f' NOT NULL[0m
+  [1m[35mSQL (0.2ms)[0m  INSERT INTO "schema_migrations" ("version") VALUES ($1)  [["version", "20101206212033"]]
+  [1m[36m (1.1ms)[0m  [1mCOMMIT[0m
+Migrating to AddModuleUuidToTasks (20110112154300)
+  [1m[35m (0.3ms)[0m  BEGIN
+  [1m[36m (0.3ms)[0m  [1mALTER TABLE "tasks" ADD "module_uuid" character varying(8)[0m
+  [1m[35mSQL (0.2ms)[0m  INSERT INTO "schema_migrations" ("version") VALUES ($1)  [["version", "20110112154300"]]
+  [1m[36m (0.5ms)[0m  [1mCOMMIT[0m
+Migrating to AddHostTags (20110204112800)
+  [1m[35m (0.2ms)[0m  BEGIN
+  [1m[36m (3.3ms)[0m  [1mCREATE TABLE "tags" ("id" serial primary key, "user_id" integer, "name" character varying(1024), "desc" text, "report_summary" boolean DEFAULT 'f' NOT NULL, "report_detail" boolean DEFAULT 'f' NOT NULL, "critical" boolean DEFAULT 'f' NOT NULL, "created_at" timestamp NOT NULL, "updated_at" timestamp NOT NULL) [0m
+  [1m[35m (0.6ms)[0m  CREATE TABLE "hosts_tags" ("host_id" integer, "tag_id" integer) 
+  [1m[36mSQL (0.3ms)[0m  [1mINSERT INTO "schema_migrations" ("version") VALUES ($1)[0m  [["version", "20110204112800"]]
+  [1m[35m (0.5ms)[0m  COMMIT
+Migrating to AddSessionTable (20110317144932)
+  [1m[36m (0.4ms)[0m  [1mBEGIN[0m
+  [1m[35m (3.3ms)[0m  CREATE TABLE "sessions" ("id" serial primary key, "host_id" integer, "stype" character varying, "via_exploit" character varying, "via_payload" character varying, "desc" character varying, "port" integer, "platform" character varying, "routes" character varying, "datastore" text, "opened_at" timestamp NOT NULL, "closed_at" timestamp, "close_reason" character varying) 
+  [1m[36m (2.6ms)[0m  [1mCREATE TABLE "session_events" ("id" serial primary key, "session_id" integer, "etype" character varying, "command" bytea, "output" bytea, "remote_path" character varying, "local_path" character varying, "created_at" timestamp) [0m
+  [1m[35mAddSessionTable::Event Load (0.7ms)[0m  SELECT "events".* FROM "events" WHERE "events"."name" = $1  [["name", "session_open"]]
+  [1m[36mSQL (0.4ms)[0m  [1mINSERT INTO "schema_migrations" ("version") VALUES ($1)[0m  [["version", "20110317144932"]]
+  [1m[35m (0.7ms)[0m  COMMIT
+Migrating to AddLocalIdToSessionTable (20110414180600)
+  [1m[36m (0.5ms)[0m  [1mBEGIN[0m
+  [1m[35m (0.4ms)[0m  ALTER TABLE "sessions" ADD "local_id" integer
+  [1m[36mSQL (0.3ms)[0m  [1mINSERT INTO "schema_migrations" ("version") VALUES ($1)[0m  [["version", "20110414180600"]]
+  [1m[35m (0.5ms)[0m  COMMIT
+Migrating to AddRoutesTable (20110415175705)
+  [1m[36m (0.3ms)[0m  [1mBEGIN[0m
+  [1m[35m (3.8ms)[0m  CREATE TABLE "routes" ("id" serial primary key, "session_id" integer, "subnet" character varying, "netmask" character varying) 
+  [1m[36m (0.5ms)[0m  [1mALTER TABLE "sessions" DROP "routes"[0m
+  [1m[35mSQL (0.3ms)[0m  INSERT INTO "schema_migrations" ("version") VALUES ($1)  [["version", "20110415175705"]]
+  [1m[36m (0.5ms)[0m  [1mCOMMIT[0m
+Migrating to ConvertBinary (20110422000000)
+  [1m[35m (0.4ms)[0m  BEGIN
+  [1m[36m (0.4ms)[0m  [1mALTER TABLE "web_pages" RENAME COLUMN "body" TO "body_text"[0m
+  [1m[35m (0.3ms)[0m  ALTER TABLE "web_pages" RENAME COLUMN "request" TO "request_text"
+  [1m[36m (0.3ms)[0m  [1mALTER TABLE "web_vulns" RENAME COLUMN "request" TO "request_text"[0m
+  [1m[35m (0.2ms)[0m  ALTER TABLE "web_vulns" RENAME COLUMN "proof" TO "proof_text"
+  [1m[36m (0.3ms)[0m  [1mALTER TABLE "web_pages" ADD "body" bytea[0m
+  [1m[35m (0.2ms)[0m  ALTER TABLE "web_pages" ADD "request" bytea
+  [1m[36m (0.2ms)[0m  [1mALTER TABLE "web_vulns" ADD "request" bytea[0m
+  [1m[35m (0.2ms)[0m  ALTER TABLE "web_vulns" ADD "proof" bytea
+  [1m[36mConvertBinary::WebPage Load (0.5ms)[0m  [1mSELECT "web_pages".* FROM "web_pages"[0m
+  [1m[35mConvertBinary::WebPage Load (0.3ms)[0m  SELECT "web_pages".* FROM "web_pages"
+  [1m[36mConvertBinary::WebVuln Load (0.4ms)[0m  [1mSELECT "web_vulns".* FROM "web_vulns"[0m
+  [1m[35mConvertBinary::WebVuln Load (0.3ms)[0m  SELECT "web_vulns".* FROM "web_vulns"
+  [1m[36m (0.3ms)[0m  [1mALTER TABLE "web_pages" DROP "body_text"[0m
+  [1m[35m (0.2ms)[0m  ALTER TABLE "web_pages" DROP "request_text"
+  [1m[36m (0.3ms)[0m  [1mALTER TABLE "web_vulns" DROP "request_text"[0m
+  [1m[35m (0.2ms)[0m  ALTER TABLE "web_vulns" DROP "proof_text"
+  [1m[36mSQL (0.2ms)[0m  [1mINSERT INTO "schema_migrations" ("version") VALUES ($1)[0m  [["version", "20110422000000"]]
+  [1m[35m (0.5ms)[0m  COMMIT
+Migrating to AddLastSeenToSessions (20110425095900)
+  [1m[36m (0.2ms)[0m  [1mBEGIN[0m
+  [1m[35m (0.4ms)[0m  ALTER TABLE "sessions" ADD "last_seen" timestamp
+  [1m[36mSQL (0.2ms)[0m  [1mINSERT INTO "schema_migrations" ("version") VALUES ($1)[0m  [["version", "20110425095900"]]
+  [1m[35m (0.4ms)[0m  COMMIT
+Migrating to TrackSuccessfulExploits (20110513143900)
+  [1m[36m (0.2ms)[0m  [1mBEGIN[0m
+  [1m[35m (0.4ms)[0m  ALTER TABLE "vulns" ADD "exploited_at" timestamp
+  [1m[36mTrackSuccessfulExploits::ExploitedHost Load (0.5ms)[0m  [1mSELECT "exploited_hosts".* FROM "exploited_hosts"[0m
+  [1m[35mSQL (0.2ms)[0m  INSERT INTO "schema_migrations" ("version") VALUES ($1)  [["version", "20110513143900"]]
+  [1m[36m (0.4ms)[0m  [1mCOMMIT[0m
+Migrating to RenameAndPruneNessusVulns (20110517160800)
+  [1m[35m (0.2ms)[0m  BEGIN
+  [1m[36mRenameAndPruneNessusVulns::Vuln Load (0.6ms)[0m  [1mSELECT "vulns".* FROM "vulns"[0m
+  [1m[35mSQL (0.2ms)[0m  INSERT INTO "schema_migrations" ("version") VALUES ($1)  [["version", "20110517160800"]]
+  [1m[36m (0.4ms)[0m  [1mCOMMIT[0m
+Migrating to AddTaskIdToReportsTable (20110527000000)
+  [1m[35m (0.2ms)[0m  BEGIN
+  [1m[36m (0.3ms)[0m  [1mALTER TABLE "reports" ADD "task_id" integer[0m
+  [1m[35mSQL (0.2ms)[0m  INSERT INTO "schema_migrations" ("version") VALUES ($1)  [["version", "20110527000000"]]
+  [1m[36m (0.4ms)[0m  [1mCOMMIT[0m
+Migrating to AddApiKeysTable (20110527000001)
+  [1m[35m (0.1ms)[0m  BEGIN
+  [1m[36m (2.9ms)[0m  [1mCREATE TABLE "api_keys" ("id" serial primary key, "token" text, "created_at" timestamp NOT NULL, "updated_at" timestamp NOT NULL) [0m
+  [1m[35mSQL (0.2ms)[0m  INSERT INTO "schema_migrations" ("version") VALUES ($1)  [["version", "20110527000001"]]
+  [1m[36m (0.5ms)[0m  [1mCOMMIT[0m
+Migrating to AddMacrosTable (20110606000001)
+  [1m[35m (0.3ms)[0m  BEGIN
+  [1m[36m (2.8ms)[0m  [1mCREATE TABLE "macros" ("id" serial primary key, "created_at" timestamp NOT NULL, "updated_at" timestamp NOT NULL, "owner" text, "name" text, "description" text, "actions" bytea, "prefs" bytea) [0m
+  [1m[35mSQL (0.3ms)[0m  INSERT INTO "schema_migrations" ("version") VALUES ($1)  [["version", "20110606000001"]]
+  [1m[36m (0.5ms)[0m  [1mCOMMIT[0m
+Migrating to AddSettingsToTasksTable (20110622000000)
+  [1m[35m (0.3ms)[0m  BEGIN
+  [1m[36m (0.3ms)[0m  [1mALTER TABLE "tasks" ADD "settings" bytea[0m
+  [1m[35mSQL (0.2ms)[0m  INSERT INTO "schema_migrations" ("version") VALUES ($1)  [["version", "20110622000000"]]
+  [1m[36m (0.4ms)[0m  [1mCOMMIT[0m
+Migrating to AddListenersTable (20110624000001)
+  [1m[35m (0.2ms)[0m  BEGIN
+  [1m[36m (2.9ms)[0m  [1mCREATE TABLE "listeners" ("id" serial primary key, "created_at" timestamp NOT NULL, "updated_at" timestamp NOT NULL, "workspace_id" integer DEFAULT 1 NOT NULL, "task_id" integer, "enabled" boolean DEFAULT 't', "owner" text, "payload" text, "address" text, "port" integer, "options" bytea) [0m
+  [1m[35mSQL (0.2ms)[0m  INSERT INTO "schema_migrations" ("version") VALUES ($1)  [["version", "20110624000001"]]
+  [1m[36m (0.6ms)[0m  [1mCOMMIT[0m
+Migrating to AddMacroToListenersTable (20110625000001)
+  [1m[35m (0.4ms)[0m  BEGIN
+  [1m[36m (0.3ms)[0m  [1mALTER TABLE "listeners" ADD "macro" text[0m
+  [1m[35mSQL (0.2ms)[0m  INSERT INTO "schema_migrations" ("version") VALUES ($1)  [["version", "20110625000001"]]
+  [1m[36m (0.4ms)[0m  [1mCOMMIT[0m
+Migrating to AddNexposeConsolesTable (20110630000001)
+  [1m[35m (0.2ms)[0m  BEGIN
+  [1m[36m (3.0ms)[0m  [1mCREATE TABLE "nexpose_consoles" ("id" serial primary key, "created_at" timestamp NOT NULL, "updated_at" timestamp NOT NULL, "enabled" boolean DEFAULT 't', "owner" text, "address" text, "port" integer DEFAULT 3780, "username" text, "password" text, "status" text, "version" text, "cert" text, "cached_sites" bytea) [0m
+  [1m[35mSQL (0.2ms)[0m  INSERT INTO "schema_migrations" ("version") VALUES ($1)  [["version", "20110630000001"]]
+  [1m[36m (0.5ms)[0m  [1mCOMMIT[0m
+Migrating to AddNameToNexposeConsolesTable (20110630000002)
+  [1m[35m (0.3ms)[0m  BEGIN
+  [1m[36m (0.3ms)[0m  [1mALTER TABLE "nexpose_consoles" ADD "name" text[0m
+  [1m[35mSQL (0.2ms)[0m  INSERT INTO "schema_migrations" ("version") VALUES ($1)  [["version", "20110630000002"]]
+  [1m[36m (0.4ms)[0m  [1mCOMMIT[0m
+Migrating to AddProfilesTable (20110717000001)
+  [1m[35m (0.2ms)[0m  BEGIN
+  [1m[36m (2.9ms)[0m  [1mCREATE TABLE "profiles" ("id" serial primary key, "created_at" timestamp NOT NULL, "updated_at" timestamp NOT NULL, "active" boolean DEFAULT 't', "name" text, "owner" text, "settings" bytea) [0m
+  [1m[35mSQL (0.2ms)[0m  INSERT INTO "schema_migrations" ("version") VALUES ($1)  [["version", "20110717000001"]]
+  [1m[36m (1.0ms)[0m  [1mCOMMIT[0m
+Migrating to ExpandCredPtypeColumn (20110727163801)
+  [1m[35m (0.3ms)[0m  BEGIN
+  [1m[36m (0.4ms)[0m  [1mALTER TABLE "creds" ALTER COLUMN "ptype" TYPE character varying(256)[0m
+  [1m[35mSQL (0.2ms)[0m  INSERT INTO "schema_migrations" ("version") VALUES ($1)  [["version", "20110727163801"]]
+  [1m[36m (0.4ms)[0m  [1mCOMMIT[0m
+Migrating to AddInitialIndexes (20110730000001)
+  [1m[35m (0.2ms)[0m  BEGIN
+  [1m[36m (1.2ms)[0m  [1mCREATE  INDEX  "index_hosts_on_address" ON "hosts"  ("address")[0m
+  [1m[35m (0.9ms)[0m  CREATE  INDEX  "index_hosts_on_address6" ON "hosts"  ("address6")
+  [1m[36m (0.9ms)[0m  [1mCREATE  INDEX  "index_hosts_on_name" ON "hosts"  ("name")[0m
+  [1m[35m (0.9ms)[0m  CREATE  INDEX  "index_hosts_on_state" ON "hosts"  ("state")
+  [1m[36m (0.9ms)[0m  [1mCREATE  INDEX  "index_hosts_on_os_name" ON "hosts"  ("os_name")[0m
+  [1m[35m (0.9ms)[0m  CREATE  INDEX  "index_hosts_on_os_flavor" ON "hosts"  ("os_flavor")
+  [1m[36m (0.9ms)[0m  [1mCREATE  INDEX  "index_hosts_on_purpose" ON "hosts"  ("purpose")[0m
+  [1m[35m (0.9ms)[0m  CREATE  INDEX  "index_services_on_port" ON "services"  ("port")
+  [1m[36m (0.9ms)[0m  [1mCREATE  INDEX  "index_services_on_proto" ON "services"  ("proto")[0m
+  [1m[35m (1.1ms)[0m  CREATE  INDEX  "index_services_on_state" ON "services"  ("state")
+  [1m[36m (0.9ms)[0m  [1mCREATE  INDEX  "index_services_on_name" ON "services"  ("name")[0m
+  [1m[35m (1.1ms)[0m  CREATE  INDEX  "index_notes_on_ntype" ON "notes"  ("ntype")
+  [1m[36m (1.1ms)[0m  [1mCREATE  INDEX  "index_vulns_on_name" ON "vulns"  ("name")[0m
+  [1m[35m (1.0ms)[0m  CREATE  INDEX  "index_refs_on_name" ON "refs"  ("name")
+  [1m[36m (1.1ms)[0m  [1mCREATE  INDEX  "index_web_sites_on_vhost" ON "web_sites"  ("vhost")[0m
+  [1m[35m (1.1ms)[0m  CREATE  INDEX  "index_web_sites_on_comments" ON "web_sites"  ("comments")
+  [1m[36m (0.9ms)[0m  [1mCREATE  INDEX  "index_web_sites_on_options" ON "web_sites"  ("options")[0m
+  [1m[35m (0.9ms)[0m  CREATE  INDEX  "index_web_pages_on_path" ON "web_pages"  ("path")
+  [1m[36m (1.1ms)[0m  [1mCREATE  INDEX  "index_web_pages_on_query" ON "web_pages"  ("query")[0m
+  [1m[35m (1.0ms)[0m  CREATE  INDEX  "index_web_forms_on_path" ON "web_forms"  ("path")
+  [1m[36m (1.1ms)[0m  [1mCREATE  INDEX  "index_web_vulns_on_path" ON "web_vulns"  ("path")[0m
+  [1m[35m (2.2ms)[0m  CREATE  INDEX  "index_web_vulns_on_method" ON "web_vulns"  ("method")
+  [1m[36m (2.3ms)[0m  [1mCREATE  INDEX  "index_web_vulns_on_name" ON "web_vulns"  ("name")[0m
+  [1m[35mSQL (0.5ms)[0m  INSERT INTO "schema_migrations" ("version") VALUES ($1)  [["version", "20110730000001"]]
+  [1m[36m (0.7ms)[0m  [1mCOMMIT[0m
+Migrating to PruneIndexes (20110812000001)
+  [1m[35m (0.3ms)[0m  BEGIN
+  [1m[36mSQL (0.2ms)[0m  [1mINSERT INTO "schema_migrations" ("version") VALUES ($1)[0m  [["version", "20110812000001"]]
+  [1m[35m (0.4ms)[0m  COMMIT
+Migrating to ExpandNotes (20110922000000)
+  [1m[36m (0.2ms)[0m  [1mBEGIN[0m
+  [1m[35m (0.3ms)[0m  ALTER TABLE "notes" ALTER COLUMN "data" TYPE text
+  [1m[36mSQL (0.2ms)[0m  [1mINSERT INTO "schema_migrations" ("version") VALUES ($1)[0m  [["version", "20110922000000"]]
+  [1m[35m (0.4ms)[0m  COMMIT
+Migrating to AddModRefTable (20110928101300)
+  [1m[36m (0.2ms)[0m  [1mBEGIN[0m
+  [1m[35m (2.9ms)[0m  CREATE TABLE "mod_refs" ("id" serial primary key, "module" character varying(1024), "mtype" character varying(128), "ref" text) 
+  [1m[36mSQL (0.2ms)[0m  [1mINSERT INTO "schema_migrations" ("version") VALUES ($1)[0m  [["version", "20110928101300"]]
+  [1m[35m (0.6ms)[0m  COMMIT
+Migrating to AddDisplayNameToReportsTable (20111011110000)
+  [1m[36m (0.3ms)[0m  [1mBEGIN[0m
+  [1m[35m (0.3ms)[0m  ALTER TABLE "reports" ADD "name" character varying(63)
+  [1m[36mAddDisplayNameToReportsTable::Report Load (0.5ms)[0m  [1mSELECT "reports".* FROM "reports"[0m
+  [1m[35mSQL (0.2ms)[0m  INSERT INTO "schema_migrations" ("version") VALUES ($1)  [["version", "20111011110000"]]
+  [1m[36m (0.4ms)[0m  [1mCOMMIT[0m
+Migrating to InetColumns (20111203000000)
+  [1m[35m (0.2ms)[0m  BEGIN
+  [1m[36m (6.9ms)[0m  [1mALTER TABLE "hosts" ALTER COLUMN "address" TYPE INET using address::INET[0m
+  [1m[35m (0.3ms)[0m  ALTER TABLE "hosts" DROP "address6"
+  [1m[36mSQL (0.2ms)[0m  [1mINSERT INTO "schema_migrations" ("version") VALUES ($1)[0m  [["version", "20111203000000"]]
+  [1m[35m (2.4ms)[0m  COMMIT
+Migrating to MoreInetColumns (20111204000000)
+  [1m[36m (0.3ms)[0m  [1mBEGIN[0m
+  [1m[35m (3.2ms)[0m  ALTER TABLE "wmap_requests" ALTER COLUMN "address" TYPE INET using address::INET
+  [1m[36m (0.3ms)[0m  [1mALTER TABLE "wmap_requests" DROP "address6"[0m
+  [1m[35m (2.8ms)[0m  ALTER TABLE "wmap_targets" ALTER COLUMN "address" TYPE INET using address::INET
+  [1m[36m (0.3ms)[0m  [1mALTER TABLE "wmap_targets" DROP "address6"[0m
+  [1m[35mSQL (0.2ms)[0m  INSERT INTO "schema_migrations" ("version") VALUES ($1)  [["version", "20111204000000"]]
+  [1m[36m (2.2ms)[0m  [1mCOMMIT[0m
+Migrating to AddScopeToHosts (20111210000000)
+  [1m[35m (0.3ms)[0m  BEGIN
+  [1m[36m (0.4ms)[0m  [1mALTER TABLE "hosts" ADD "scope" text[0m
+  [1m[35mSQL (0.2ms)[0m  INSERT INTO "schema_migrations" ("version") VALUES ($1)  [["version", "20111210000000"]]
+  [1m[36m (0.4ms)[0m  [1mCOMMIT[0m
+Migrating to AddVirtualHostToHosts (20120126110000)
+  [1m[35m (0.2ms)[0m  BEGIN
+  [1m[36m (0.3ms)[0m  [1mALTER TABLE "hosts" ADD "virtual_host" text[0m
+  [1m[35mSQL (0.2ms)[0m  INSERT INTO "schema_migrations" ("version") VALUES ($1)  [["version", "20120126110000"]]
+  [1m[36m (0.4ms)[0m  [1mCOMMIT[0m
+Migrating to RenameWorkspaceMembers (20120411173220)
+  [1m[35m (0.2ms)[0m  BEGIN
+  [1m[36m (0.3ms)[0m  [1mALTER TABLE "project_members" RENAME TO "workspace_members"[0m
+  [1m[35mSQL (0.2ms)[0m  INSERT INTO "schema_migrations" ("version") VALUES ($1)  [["version", "20120411173220"]]
+  [1m[36m (0.5ms)[0m  [1mCOMMIT[0m
+Migrating to AddCounterCachesToHosts (20120601152442)
+  [1m[35m (0.2ms)[0m  BEGIN
+  [1m[36m (6.2ms)[0m  [1mALTER TABLE "hosts" ADD "note_count" integer DEFAULT 0[0m
+  [1m[35m (7.0ms)[0m  ALTER TABLE "hosts" ADD "vuln_count" integer DEFAULT 0
+  [1m[36m (7.1ms)[0m  [1mALTER TABLE "hosts" ADD "service_count" integer DEFAULT 0[0m
+  [1m[35mMdm::Host Load (0.8ms)[0m  SELECT "hosts".* FROM "hosts"
+  [1m[36mSQL (0.2ms)[0m  [1mINSERT INTO "schema_migrations" ("version") VALUES ($1)[0m  [["version", "20120601152442"]]
+  [1m[35m (5.8ms)[0m  COMMIT
+Migrating to AddVulnDetails (20120625000000)
+  [1m[36m (0.4ms)[0m  [1mBEGIN[0m
+  [1m[35m (3.3ms)[0m  CREATE TABLE "vuln_details" ("id" serial primary key, "vuln_id" integer, "cvss_score" float, "cvss_vector" character varying, "title" character varying, "description" text, "solution" text, "proof" bytea, "nx_console_id" integer, "nx_device_id" integer, "nx_vuln_id" character varying, "nx_severity" float, "nx_pci_severity" float, "nx_published" timestamp, "nx_added" timestamp, "nx_modified" timestamp, "nx_tags" text) 
+  [1m[36mSQL (0.2ms)[0m  [1mINSERT INTO "schema_migrations" ("version") VALUES ($1)[0m  [["version", "20120625000000"]]
+  [1m[35m (0.5ms)[0m  COMMIT
+Migrating to AddHostDetails (20120625000001)
+  [1m[36m (0.3ms)[0m  [1mBEGIN[0m
+  [1m[35m (1.9ms)[0m  CREATE TABLE "host_details" ("id" serial primary key, "host_id" integer, "nx_console_id" integer, "nx_device_id" integer) 
+  [1m[36mSQL (0.3ms)[0m  [1mINSERT INTO "schema_migrations" ("version") VALUES ($1)[0m  [["version", "20120625000001"]]
+  [1m[35m (0.4ms)[0m  COMMIT
+Migrating to ExpandDetails (20120625000002)
+  [1m[36m (0.3ms)[0m  [1mBEGIN[0m
+  [1m[35m (0.3ms)[0m  ALTER TABLE "vuln_details" ADD "nx_vuln_status" text
+  [1m[36m (0.2ms)[0m  [1mALTER TABLE "vuln_details" ADD "nx_proof_key" text[0m
+  [1m[35m (0.2ms)[0m  ALTER TABLE "vuln_details" ADD "src" character varying
+  [1m[36m (1.3ms)[0m  [1mALTER TABLE "host_details" ADD "src" character varying[0m
+  [1m[35mSQL (0.2ms)[0m  INSERT INTO "schema_migrations" ("version") VALUES ($1)  [["version", "20120625000002"]]
+  [1m[36m (0.4ms)[0m  [1mCOMMIT[0m
+Migrating to ExpandDetails2 (20120625000003)
+  [1m[35m (0.2ms)[0m  BEGIN
+  [1m[36m (0.3ms)[0m  [1mALTER TABLE "host_details" ADD "nx_site_name" character varying[0m
+  [1m[35m (0.2ms)[0m  ALTER TABLE "host_details" ADD "nx_site_importance" character varying
+  [1m[36m (0.2ms)[0m  [1mALTER TABLE "host_details" ADD "nx_scan_template" character varying[0m
+  [1m[35m (0.2ms)[0m  ALTER TABLE "host_details" ADD "nx_risk_score" float
+  [1m[36m (0.2ms)[0m  [1mALTER TABLE "vuln_details" ADD "nx_scan_id" integer[0m
+  [1m[35m (0.2ms)[0m  ALTER TABLE "vuln_details" ADD "nx_vulnerable_since" timestamp
+  [1m[36m (0.2ms)[0m  [1mALTER TABLE "vuln_details" ADD "nx_pci_compliance_status" character varying[0m
+  [1m[35mSQL (0.2ms)[0m  INSERT INTO "schema_migrations" ("version") VALUES ($1)  [["version", "20120625000003"]]
+  [1m[36m (0.4ms)[0m  [1mCOMMIT[0m
+Migrating to AddVulnAttempts (20120625000004)
+  [1m[35m (0.2ms)[0m  BEGIN
+  [1m[36m (2.9ms)[0m  [1mCREATE TABLE "vuln_attempts" ("id" serial primary key, "vuln_id" integer, "attempted_at" timestamp, "exploited" boolean, "fail_reason" character varying, "username" character varying, "module" text, "session_id" integer, "loot_id" integer) [0m
+  [1m[35mSQL (0.2ms)[0m  INSERT INTO "schema_migrations" ("version") VALUES ($1)  [["version", "20120625000004"]]
+  [1m[36m (0.6ms)[0m  [1mCOMMIT[0m
+Migrating to AddVulnAndHostCounterCaches (20120625000005)
+  [1m[35m (0.3ms)[0m  BEGIN
+  [1m[36m (6.7ms)[0m  [1mALTER TABLE "hosts" ADD "host_detail_count" integer DEFAULT 0[0m
+  [1m[35m (3.4ms)[0m  ALTER TABLE "vulns" ADD "vuln_detail_count" integer DEFAULT 0
+  [1m[36m (3.6ms)[0m  [1mALTER TABLE "vulns" ADD "vuln_attempt_count" integer DEFAULT 0[0m
+  [1m[35mSQL (0.2ms)[0m  INSERT INTO "schema_migrations" ("version") VALUES ($1)  [["version", "20120625000005"]]
+  [1m[36m (3.2ms)[0m  [1mCOMMIT[0m
+Migrating to AddModuleDetails (20120625000006)
+  [1m[35m (0.3ms)[0m  BEGIN
+  [1m[36m (3.1ms)[0m  [1mCREATE TABLE "module_details" ("id" serial primary key, "mtime" timestamp, "file" text, "mtype" character varying, "refname" text, "fullname" text, "name" text, "rank" integer, "description" text, "license" character varying, "privileged" boolean, "disclosure_date" timestamp, "default_target" integer, "default_action" text, "stance" character varying, "ready" boolean) [0m
+  [1m[35m (1.0ms)[0m  CREATE  INDEX  "index_module_details_on_refname" ON "module_details"  ("refname")
+  [1m[36m (1.0ms)[0m  [1mCREATE  INDEX  "index_module_details_on_name" ON "module_details"  ("name")[0m
+  [1m[35m (0.9ms)[0m  CREATE  INDEX  "index_module_details_on_description" ON "module_details"  ("description")
+  [1m[36m (1.0ms)[0m  [1mCREATE  INDEX  "index_module_details_on_mtype" ON "module_details"  ("mtype")[0m
+  [1m[35m (3.0ms)[0m  CREATE TABLE "module_authors" ("id" serial primary key, "module_detail_id" integer, "name" text, "email" text) 
+  [1m[36m (0.9ms)[0m  [1mCREATE  INDEX  "index_module_authors_on_module_detail_id" ON "module_authors"  ("module_detail_id")[0m
+  [1m[35m (2.6ms)[0m  CREATE TABLE "module_mixins" ("id" serial primary key, "module_detail_id" integer, "name" text) 
+  [1m[36m (0.9ms)[0m  [1mCREATE  INDEX  "index_module_mixins_on_module_detail_id" ON "module_mixins"  ("module_detail_id")[0m
+  [1m[35m (3.1ms)[0m  CREATE TABLE "module_targets" ("id" serial primary key, "module_detail_id" integer, "index" integer, "name" text) 
+  [1m[36m (0.9ms)[0m  [1mCREATE  INDEX  "index_module_targets_on_module_detail_id" ON "module_targets"  ("module_detail_id")[0m
+  [1m[35m (3.1ms)[0m  CREATE TABLE "module_actions" ("id" serial primary key, "module_detail_id" integer, "name" text) 
+  [1m[36m (0.9ms)[0m  [1mCREATE  INDEX  "index_module_actions_on_module_detail_id" ON "module_actions"  ("module_detail_id")[0m
+  [1m[35m (2.8ms)[0m  CREATE TABLE "module_refs" ("id" serial primary key, "module_detail_id" integer, "name" text) 
+  [1m[36m (0.9ms)[0m  [1mCREATE  INDEX  "index_module_refs_on_module_detail_id" ON "module_refs"  ("module_detail_id")[0m
+  [1m[35m (0.9ms)[0m  CREATE  INDEX  "index_module_refs_on_name" ON "module_refs"  ("name")
+  [1m[36m (2.8ms)[0m  [1mCREATE TABLE "module_archs" ("id" serial primary key, "module_detail_id" integer, "name" text) [0m
+  [1m[35m (1.0ms)[0m  CREATE  INDEX  "index_module_archs_on_module_detail_id" ON "module_archs"  ("module_detail_id")
+  [1m[36m (2.9ms)[0m  [1mCREATE TABLE "module_platforms" ("id" serial primary key, "module_detail_id" integer, "name" text) [0m
+  [1m[35m (0.9ms)[0m  CREATE  INDEX  "index_module_platforms_on_module_detail_id" ON "module_platforms"  ("module_detail_id")
+  [1m[36mSQL (0.2ms)[0m  [1mINSERT INTO "schema_migrations" ("version") VALUES ($1)[0m  [["version", "20120625000006"]]
+  [1m[35m (1.0ms)[0m  COMMIT
+Migrating to AddExploitAttempts (20120625000007)
+  [1m[36m (0.8ms)[0m  [1mBEGIN[0m
+  [1m[35m (3.5ms)[0m  CREATE TABLE "exploit_attempts" ("id" serial primary key, "host_id" integer, "service_id" integer, "vuln_id" integer, "attempted_at" timestamp, "exploited" boolean, "fail_reason" character varying, "username" character varying, "module" text, "session_id" integer, "loot_id" integer, "port" integer, "proto" character varying) 
+  [1m[36m (6.3ms)[0m  [1mALTER TABLE "hosts" ADD "exploit_attempt_count" integer DEFAULT 0[0m
+  [1m[35mSQL (0.2ms)[0m  INSERT INTO "schema_migrations" ("version") VALUES ($1)  [["version", "20120625000007"]]
+  [1m[36m (2.1ms)[0m  [1mCOMMIT[0m
+Migrating to AddFailMessage (20120625000008)
+  [1m[35m (0.4ms)[0m  BEGIN
+  [1m[36m (0.3ms)[0m  [1mALTER TABLE "vuln_attempts" ADD "fail_detail" text[0m
+  [1m[35m (0.3ms)[0m  ALTER TABLE "exploit_attempts" ADD "fail_detail" text
+  [1m[36mSQL (0.2ms)[0m  [1mINSERT INTO "schema_migrations" ("version") VALUES ($1)[0m  [["version", "20120625000008"]]
+  [1m[35m (0.4ms)[0m  COMMIT
+Migrating to AddOwnerAndPayloadToWebVulns (20120718202805)
+  [1m[36m (0.2ms)[0m  [1mBEGIN[0m
+  [1m[35m (0.3ms)[0m  ALTER TABLE "web_vulns" ADD "owner" character varying
+  [1m[36m (0.2ms)[0m  [1mALTER TABLE "web_vulns" ADD "payload" text[0m
+  [1m[35mSQL (0.2ms)[0m  INSERT INTO "schema_migrations" ("version") VALUES ($1)  [["version", "20120718202805"]]
+  [1m[36m (0.4ms)[0m  [1mCOMMIT[0m
+Migrating to ChangeRequiredColumnsToNullFalseInWebVulns (20130228214900)
+  [1m[35m (0.2ms)[0m  BEGIN
+  [1m[36m (0.3ms)[0m  [1mALTER TABLE "web_vulns" ALTER "category" SET NOT NULL[0m
+  [1m[35m (0.2ms)[0m  ALTER TABLE "web_vulns" ALTER "confidence" SET NOT NULL
+  [1m[36m (0.2ms)[0m  [1mALTER TABLE "web_vulns" ALTER "method" SET NOT NULL[0m
+  [1m[35m (0.2ms)[0m  ALTER TABLE "web_vulns" ALTER "name" SET NOT NULL
+  [1m[36m (0.2ms)[0m  [1mALTER TABLE "web_vulns" ALTER "params" SET NOT NULL[0m
+  [1m[35m (0.2ms)[0m  ALTER TABLE "web_vulns" ALTER "path" SET NOT NULL
+  [1m[36m (0.2ms)[0m  [1mALTER TABLE "web_vulns" ALTER "pname" SET NOT NULL[0m
+  [1m[35m (0.2ms)[0m  ALTER TABLE "web_vulns" ALTER "proof" SET NOT NULL
+  [1m[36m (0.3ms)[0m  [1mALTER TABLE "web_vulns" ALTER "risk" SET NOT NULL[0m
+  [1m[35mSQL (0.2ms)[0m  INSERT INTO "schema_migrations" ("version") VALUES ($1)  [["version", "20130228214900"]]
+  [1m[36m (0.4ms)[0m  [1mCOMMIT[0m
+Migrating to ChangeForeignKeyInModuleActions (20130412154159)
+  [1m[35m (0.2ms)[0m  BEGIN
+  [1m[36m (0.2ms)[0m  [1mALTER TABLE "module_actions" RENAME COLUMN "module_detail_id" TO "detail_id"[0m
+  [1m[35m (0.2ms)[0m  ALTER INDEX "index_module_actions_on_module_detail_id" RENAME TO "index_module_actions_on_detail_id"
+  [1m[36mSQL (0.2ms)[0m  [1mINSERT INTO "schema_migrations" ("version") VALUES ($1)[0m  [["version", "20130412154159"]]
+  [1m[35m (0.4ms)[0m  COMMIT
+Migrating to ChangeForeignKeyInModuleArchs (20130412171844)
+  [1m[36m (0.2ms)[0m  [1mBEGIN[0m
+  [1m[35m (0.2ms)[0m  ALTER TABLE "module_archs" RENAME COLUMN "module_detail_id" TO "detail_id"
+  [1m[36m (0.2ms)[0m  [1mALTER INDEX "index_module_archs_on_module_detail_id" RENAME TO "index_module_archs_on_detail_id"[0m
+  [1m[35mSQL (0.2ms)[0m  INSERT INTO "schema_migrations" ("version") VALUES ($1)  [["version", "20130412171844"]]
+  [1m[36m (0.4ms)[0m  [1mCOMMIT[0m
+Migrating to ChangeForeignKeyInModuleAuthors (20130412173121)
+  [1m[35m (0.2ms)[0m  BEGIN
+  [1m[36m (0.2ms)[0m  [1mALTER TABLE "module_authors" RENAME COLUMN "module_detail_id" TO "detail_id"[0m
+  [1m[35m (0.2ms)[0m  ALTER INDEX "index_module_authors_on_module_detail_id" RENAME TO "index_module_authors_on_detail_id"
+  [1m[36mSQL (0.2ms)[0m  [1mINSERT INTO "schema_migrations" ("version") VALUES ($1)[0m  [["version", "20130412173121"]]
+  [1m[35m (0.4ms)[0m  COMMIT
+Migrating to ChangeForeignKeyInModuleMixins (20130412173640)
+  [1m[36m (0.2ms)[0m  [1mBEGIN[0m
+  [1m[35m (0.3ms)[0m  ALTER TABLE "module_mixins" RENAME COLUMN "module_detail_id" TO "detail_id"
+  [1m[36m (0.2ms)[0m  [1mALTER INDEX "index_module_mixins_on_module_detail_id" RENAME TO "index_module_mixins_on_detail_id"[0m
+  [1m[35mSQL (0.2ms)[0m  INSERT INTO "schema_migrations" ("version") VALUES ($1)  [["version", "20130412173640"]]
+  [1m[36m (0.4ms)[0m  [1mCOMMIT[0m
+Migrating to ChangeForeignKeyInModulePlatforms (20130412174254)
+  [1m[35m (0.2ms)[0m  BEGIN
+  [1m[36m (0.2ms)[0m  [1mALTER TABLE "module_platforms" RENAME COLUMN "module_detail_id" TO "detail_id"[0m
+  [1m[35m (0.2ms)[0m  ALTER INDEX "index_module_platforms_on_module_detail_id" RENAME TO "index_module_platforms_on_detail_id"
+  [1m[36mSQL (0.2ms)[0m  [1mINSERT INTO "schema_migrations" ("version") VALUES ($1)[0m  [["version", "20130412174254"]]
+  [1m[35m (0.4ms)[0m  COMMIT
+Migrating to ChangeForeignKeyInModuleRefs (20130412174719)
+  [1m[36m (0.2ms)[0m  [1mBEGIN[0m
+  [1m[35m (0.2ms)[0m  ALTER TABLE "module_refs" RENAME COLUMN "module_detail_id" TO "detail_id"
+  [1m[36m (0.2ms)[0m  [1mALTER INDEX "index_module_refs_on_module_detail_id" RENAME TO "index_module_refs_on_detail_id"[0m
+  [1m[35mSQL (0.2ms)[0m  INSERT INTO "schema_migrations" ("version") VALUES ($1)  [["version", "20130412174719"]]
+  [1m[36m (0.4ms)[0m  [1mCOMMIT[0m
+Migrating to ChangeForeignKeyInModuleTargets (20130412175040)
+  [1m[35m (0.2ms)[0m  BEGIN
+  [1m[36m (0.3ms)[0m  [1mALTER TABLE "module_targets" RENAME COLUMN "module_detail_id" TO "detail_id"[0m
+  [1m[35m (0.2ms)[0m  ALTER INDEX "index_module_targets_on_module_detail_id" RENAME TO "index_module_targets_on_detail_id"
+  [1m[36mSQL (0.2ms)[0m  [1mINSERT INTO "schema_migrations" ("version") VALUES ($1)[0m  [["version", "20130412175040"]]
+  [1m[35m (0.4ms)[0m  COMMIT
+Migrating to AddCredsCounterCache (20130423211152)
+  [1m[36m (0.1ms)[0m  [1mBEGIN[0m
+  [1m[35m (7.3ms)[0m  ALTER TABLE "hosts" ADD "cred_count" integer DEFAULT 0
+  [1m[36mMdm::Cred Load (0.5ms)[0m  [1mSELECT "creds".* FROM "creds"[0m
+  [1m[35mSQL (0.2ms)[0m  INSERT INTO "schema_migrations" ("version") VALUES ($1)  [["version", "20130423211152"]]
+  [1m[36m (1.9ms)[0m  [1mCOMMIT[0m
+Migrating to ChangeRequiredColumnsToNullFalseInHosts (20130430151353)
+  [1m[35m (0.3ms)[0m  BEGIN
+  [1m[36m (0.4ms)[0m  [1mALTER TABLE "hosts" ALTER "address" SET NOT NULL[0m
+  [1m[35m (0.2ms)[0m  ALTER TABLE "hosts" ALTER "workspace_id" SET NOT NULL
+  [1m[36mSQL (0.2ms)[0m  [1mINSERT INTO "schema_migrations" ("version") VALUES ($1)[0m  [["version", "20130430151353"]]
+  [1m[35m (0.4ms)[0m  COMMIT
+Migrating to EnforceAddressUniquenessInWorkspaceInHosts (20130430162145)
+  [1m[36m (0.2ms)[0m  [1mBEGIN[0m
+  [1m[35m (1.1ms)[0m  
+      SELECT workspace_id, address, count_addr
+        FROM (
+          SELECT workspace_id, address, COUNT(address) AS count_addr
+            FROM hosts
+            GROUP BY address, workspace_id
+        ) X
+        WHERE count_addr > 1
+    
+  [1m[36m (0.3ms)[0m  [1mDROP INDEX "index_hosts_on_address"[0m
+  [1m[35m (1.2ms)[0m  CREATE UNIQUE INDEX  "index_hosts_on_workspace_id_and_address" ON "hosts"  ("workspace_id", "address")
+  [1m[36mSQL (0.2ms)[0m  [1mINSERT INTO "schema_migrations" ("version") VALUES ($1)[0m  [["version", "20130430162145"]]
+  [1m[35m (0.7ms)[0m  COMMIT
+Migrating to RemoveCampaigns (20130510021637)
+  [1m[36m (0.2ms)[0m  [1mBEGIN[0m
+  [1m[35m (1.0ms)[0m  DROP TABLE "attachments"
+  [1m[36m (0.3ms)[0m  [1mDROP TABLE "attachments_email_templates"[0m
+  [1m[35m (0.8ms)[0m  DROP TABLE "email_addresses"
+  [1m[36m (0.8ms)[0m  [1mDROP TABLE "email_templates"[0m
+  [1m[35m (0.7ms)[0m  DROP TABLE "web_templates"
+  [1m[36m (0.8ms)[0m  [1mDROP TABLE "campaigns"[0m
+  [1m[35mSQL (0.4ms)[0m  INSERT INTO "schema_migrations" ("version") VALUES ($1)  [["version", "20130510021637"]]
+  [1m[36m (3.3ms)[0m  [1mCOMMIT[0m
+Migrating to ChangeWebVulnsConfidenceToInteger (20130515164311)
+  [1m[35m (0.3ms)[0m  BEGIN
+  [1m[36m (5.1ms)[0m  [1mALTER TABLE web_vulns ALTER COLUMN confidence TYPE integer USING confidence::integer[0m
+  [1m[35mSQL (0.3ms)[0m  INSERT INTO "schema_migrations" ("version") VALUES ($1)  [["version", "20130515164311"]]
+  [1m[36m (1.5ms)[0m  [1mCOMMIT[0m
+Migrating to ValidMdmWebVulnParams (20130515172727)
+  [1m[35m (0.3ms)[0m  BEGIN
+  [1m[36mMdm::WebVuln Load (0.6ms)[0m  [1mSELECT  "web_vulns".* FROM "web_vulns"  ORDER BY "web_vulns"."id" ASC LIMIT 1000[0m
+  [1m[35mSQL (0.3ms)[0m  INSERT INTO "schema_migrations" ("version") VALUES ($1)  [["version", "20130515172727"]]
+  [1m[36m (0.4ms)[0m  [1mCOMMIT[0m
+Migrating to MakingVulnsRefsARealArModel (20130516204810)
+  [1m[35m (0.2ms)[0m  BEGIN
+  [1m[36m (2.9ms)[0m  [1mALTER TABLE "vulns_refs" ADD "id" serial primary key[0m
+  [1m[35mSQL (0.2ms)[0m  INSERT INTO "schema_migrations" ("version") VALUES ($1)  [["version", "20130516204810"]]
+  [1m[36m (0.8ms)[0m  [1mCOMMIT[0m
+Migrating to CreateTaskCreds (20130522001343)
+  [1m[35m (0.3ms)[0m  BEGIN
+  [1m[36m (2.1ms)[0m  [1mCREATE TABLE "task_creds" ("id" serial primary key, "task_id" integer NOT NULL, "cred_id" integer NOT NULL, "created_at" timestamp NOT NULL, "updated_at" timestamp NOT NULL) [0m
+  [1m[35mSQL (0.2ms)[0m  INSERT INTO "schema_migrations" ("version") VALUES ($1)  [["version", "20130522001343"]]
+  [1m[36m (0.5ms)[0m  [1mCOMMIT[0m
+Migrating to CreateTaskHosts (20130522032517)
+  [1m[35m (0.3ms)[0m  BEGIN
+  [1m[36m (2.2ms)[0m  [1mCREATE TABLE "task_hosts" ("id" serial primary key, "task_id" integer NOT NULL, "host_id" integer NOT NULL, "created_at" timestamp NOT NULL, "updated_at" timestamp NOT NULL) [0m
+  [1m[35mSQL (0.3ms)[0m  INSERT INTO "schema_migrations" ("version") VALUES ($1)  [["version", "20130522032517"]]
+  [1m[36m (0.4ms)[0m  [1mCOMMIT[0m
+Migrating to CreateTaskServices (20130522041110)
+  [1m[35m (0.3ms)[0m  BEGIN
+  [1m[36m (2.0ms)[0m  [1mCREATE TABLE "task_services" ("id" serial primary key, "task_id" integer NOT NULL, "service_id" integer NOT NULL, "created_at" timestamp NOT NULL, "updated_at" timestamp NOT NULL) [0m
+  [1m[35mSQL (0.2ms)[0m  INSERT INTO "schema_migrations" ("version") VALUES ($1)  [["version", "20130522041110"]]
+  [1m[36m (0.5ms)[0m  [1mCOMMIT[0m
+Migrating to RemoveCampaignIdFromClients (20130525015035)
+  [1m[35m (0.4ms)[0m  BEGIN
+  [1m[36m (0.3ms)[0m  [1mALTER TABLE "clients" DROP "campaign_id"[0m
+  [1m[35mSQL (0.2ms)[0m  INSERT INTO "schema_migrations" ("version") VALUES ($1)  [["version", "20130525015035"]]
+  [1m[36m (0.4ms)[0m  [1mCOMMIT[0m
+Migrating to DropTableImportedCreds (20130525212420)
+  [1m[35m (0.2ms)[0m  BEGIN
+  [1m[36m (0.9ms)[0m  [1mDROP TABLE "imported_creds"[0m
+  [1m[35mSQL (0.2ms)[0m  INSERT INTO "schema_migrations" ("version") VALUES ($1)  [["version", "20130525212420"]]
+  [1m[36m (1.2ms)[0m  [1mCOMMIT[0m
+Migrating to MakingHostTagsARealArModel (20130531144949)
+  [1m[35m (0.2ms)[0m  BEGIN
+  [1m[36m (3.0ms)[0m  [1mALTER TABLE "hosts_tags" ADD "id" serial primary key[0m
+  [1m[35mSQL (0.2ms)[0m  INSERT INTO "schema_migrations" ("version") VALUES ($1)  [["version", "20130531144949"]]
+  [1m[36m (0.9ms)[0m  [1mCOMMIT[0m
+Migrating to CreateTaskSessions (20130604145732)
+  [1m[35m (0.3ms)[0m  BEGIN
+  [1m[36m (2.1ms)[0m  [1mCREATE TABLE "task_sessions" ("id" serial primary key, "task_id" integer NOT NULL, "session_id" integer NOT NULL, "created_at" timestamp NOT NULL, "updated_at" timestamp NOT NULL) [0m
+  [1m[35mSQL (0.2ms)[0m  INSERT INTO "schema_migrations" ("version") VALUES ($1)  [["version", "20130604145732"]]
+  [1m[36m (0.6ms)[0m  [1mCOMMIT[0m
+Migrating to RemovePnameValidation (20130717150737)
+  [1m[35m (0.3ms)[0m  BEGIN
+  [1m[36m (0.3ms)[0m  [1mALTER TABLE "web_vulns" ALTER COLUMN "pname" TYPE text[0m
+  [1m[35m (0.2ms)[0m  ALTER TABLE "web_vulns" ALTER "pname" DROP NOT NULL
+  [1m[36mSQL (0.2ms)[0m  [1mINSERT INTO "schema_migrations" ("version") VALUES ($1)[0m  [["version", "20130717150737"]]
+  [1m[35m (0.4ms)[0m  COMMIT
+Migrating to CreateAutomaticExploitationMatches (20131002004641)
+  [1m[36m (0.2ms)[0m  [1mBEGIN[0m
+  [1m[35m (3.0ms)[0m  CREATE TABLE "automatic_exploitation_matches" ("id" serial primary key, "ref_id" integer, "state" character varying, "nexpose_data_vulnerability_definition_id" integer, "created_at" timestamp NOT NULL, "updated_at" timestamp NOT NULL) 
+  [1m[36m (0.9ms)[0m  [1mCREATE  INDEX  "index_automatic_exploitation_matches_on_ref_id" ON "automatic_exploitation_matches"  ("ref_id")[0m
+  [1m[35mSQL (0.2ms)[0m  INSERT INTO "schema_migrations" ("version") VALUES ($1)  [["version", "20131002004641"]]
+  [1m[36m (0.5ms)[0m  [1mCOMMIT[0m
+Migrating to CreateAutomaticExploitationMatchSets (20131002164449)
+  [1m[35m (0.7ms)[0m  BEGIN
+  [1m[36m (2.0ms)[0m  [1mCREATE TABLE "automatic_exploitation_match_sets" ("id" serial primary key, "workspace_id" integer, "user_id" integer, "created_at" timestamp NOT NULL, "updated_at" timestamp NOT NULL) [0m
+  [1m[35m (1.0ms)[0m  CREATE  INDEX  "index_automatic_exploitation_match_sets_on_user_id" ON "automatic_exploitation_match_sets"  ("user_id")
+  [1m[36m (1.0ms)[0m  [1mCREATE  INDEX  "index_automatic_exploitation_match_sets_on_workspace_id" ON "automatic_exploitation_match_sets"  ("workspace_id")[0m
+  [1m[35mSQL (0.2ms)[0m  INSERT INTO "schema_migrations" ("version") VALUES ($1)  [["version", "20131002164449"]]
+  [1m[36m (0.5ms)[0m  [1mCOMMIT[0m
+Migrating to CreateAutomaticExploitationRuns (20131008213344)
+  [1m[35m (0.3ms)[0m  BEGIN
+  [1m[36m (2.0ms)[0m  [1mCREATE TABLE "automatic_exploitation_runs" ("id" serial primary key, "workspace_id" integer, "user_id" integer, "match_set_id" integer, "created_at" timestamp NOT NULL, "updated_at" timestamp NOT NULL) [0m
+  [1m[35mSQL (0.2ms)[0m  INSERT INTO "schema_migrations" ("version") VALUES ($1)  [["version", "20131008213344"]]
+  [1m[36m (0.4ms)[0m  [1mCOMMIT[0m
+Migrating to ModuleDetailOnAutomaticExploitationMatch (20131011184338)
+  [1m[35m (0.3ms)[0m  BEGIN
+  [1m[36m (0.3ms)[0m  [1mALTER TABLE "automatic_exploitation_matches" RENAME COLUMN "ref_id" TO "module_detail_id"[0m
+  [1m[35m (0.2ms)[0m  ALTER INDEX "index_automatic_exploitation_matches_on_ref_id" RENAME TO "index_automatic_exploitation_matches_on_module_detail_id"
+  [1m[36m (0.2ms)[0m  [1mALTER TABLE "automatic_exploitation_matches" ADD "match_set_id" integer[0m
+  [1m[35mSQL (0.2ms)[0m  INSERT INTO "schema_migrations" ("version") VALUES ($1)  [["version", "20131011184338"]]
+  [1m[36m (0.4ms)[0m  [1mCOMMIT[0m
+Migrating to CreateAutomaticExploitationMatchResults (20131017150735)
+  [1m[35m (0.2ms)[0m  BEGIN
+  [1m[36m (3.1ms)[0m  [1mCREATE TABLE "automatic_exploitation_match_results" ("id" serial primary key, "match_id" integer, "run_id" integer, "state" character varying NOT NULL, "created_at" timestamp NOT NULL, "updated_at" timestamp NOT NULL) [0m
+  [1m[35mSQL (0.3ms)[0m  INSERT INTO "schema_migrations" ("version") VALUES ($1)  [["version", "20131017150735"]]
+  [1m[36m (1.0ms)[0m  [1mCOMMIT[0m
+Migrating to MakeMatchPolymorphic (20131021185657)
+  [1m[35m (0.3ms)[0m  BEGIN
+  [1m[36m (0.3ms)[0m  [1mALTER TABLE "automatic_exploitation_matches" ADD "matchable_type" character varying[0m
+  [1m[35m (0.2ms)[0m  ALTER TABLE "automatic_exploitation_matches" ADD "matchable_id" integer
+  [1m[36mSQL (0.2ms)[0m  [1mINSERT INTO "schema_migrations" ("version") VALUES ($1)[0m  [["version", "20131021185657"]]
+  [1m[35m (0.4ms)[0m  COMMIT
+Migrating to CreateMetasploitCredentialPublics (20140331173835)
+  [1m[36m (0.2ms)[0m  [1mBEGIN[0m
+  [1m[35m (3.0ms)[0m  CREATE TABLE "metasploit_credential_publics" ("id" serial primary key, "username" character varying NOT NULL, "created_at" timestamp NOT NULL, "updated_at" timestamp NOT NULL) 
+  [1m[36m (1.0ms)[0m  [1mCREATE UNIQUE INDEX  "index_metasploit_credential_publics_on_username" ON "metasploit_credential_publics"  ("username")[0m
+  [1m[35mSQL (0.2ms)[0m  INSERT INTO "schema_migrations" ("version") VALUES ($1)  [["version", "20140331173835"]]
+  [1m[36m (0.5ms)[0m  [1mCOMMIT[0m
+Migrating to CreateMetasploitCredentialPrivates (20140407212345)
+  [1m[35m (0.3ms)[0m  BEGIN
+  [1m[36m (2.8ms)[0m  [1mCREATE TABLE "metasploit_credential_privates" ("id" serial primary key, "type" character varying NOT NULL, "data" text NOT NULL, "created_at" timestamp NOT NULL, "updated_at" timestamp NOT NULL) [0m
+  [1m[35m (1.0ms)[0m  CREATE UNIQUE INDEX  "index_metasploit_credential_privates_on_type_and_data" ON "metasploit_credential_privates"  ("type", "data")
+  [1m[36mSQL (0.2ms)[0m  [1mINSERT INTO "schema_migrations" ("version") VALUES ($1)[0m  [["version", "20140407212345"]]
+  [1m[35m (0.6ms)[0m  COMMIT
+Migrating to CreateMetasploitCredentialRealms (20140410132401)
+  [1m[36m (0.3ms)[0m  [1mBEGIN[0m
+  [1m[35m (3.0ms)[0m  CREATE TABLE "metasploit_credential_realms" ("id" serial primary key, "key" character varying NOT NULL, "value" character varying NOT NULL, "created_at" timestamp NOT NULL, "updated_at" timestamp NOT NULL) 
+  [1m[36mSQL (0.2ms)[0m  [1mINSERT INTO "schema_migrations" ("version") VALUES ($1)[0m  [["version", "20140410132401"]]
+  [1m[35m (0.5ms)[0m  COMMIT
+Migrating to UniqueMetasploitCredentialRealms (20140410161611)
+  [1m[36m (0.4ms)[0m  [1mBEGIN[0m
+  [1m[35m (1.0ms)[0m  CREATE UNIQUE INDEX  "index_metasploit_credential_realms_on_key_and_value" ON "metasploit_credential_realms"  ("key", "value")
+  [1m[36mSQL (0.3ms)[0m  [1mINSERT INTO "schema_migrations" ("version") VALUES ($1)[0m  [["version", "20140410161611"]]
+  [1m[35m (0.4ms)[0m  COMMIT
+Migrating to CreateMetasploitCredentialOriginManuals (20140410191213)
+  [1m[36m (0.2ms)[0m  [1mBEGIN[0m
+  [1m[35m (2.1ms)[0m  CREATE TABLE "metasploit_credential_origin_manuals" ("id" serial primary key, "user_id" integer NOT NULL, "created_at" timestamp NOT NULL, "updated_at" timestamp NOT NULL) 
+  [1m[36m (1.0ms)[0m  [1mCREATE  INDEX  "index_metasploit_credential_origin_manuals_on_user_id" ON "metasploit_credential_origin_manuals"  ("user_id")[0m
+  [1m[35mSQL (0.2ms)[0m  INSERT INTO "schema_migrations" ("version") VALUES ($1)  [["version", "20140410191213"]]
+  [1m[36m (0.5ms)[0m  [1mCOMMIT[0m
+Migrating to CreateMetasploitCredentialOriginImports (20140410205410)
+  [1m[35m (0.3ms)[0m  BEGIN
+  [1m[36m (2.9ms)[0m  [1mCREATE TABLE "metasploit_credential_origin_imports" ("id" serial primary key, "filename" text NOT NULL, "task_id" integer, "created_at" timestamp NOT NULL, "updated_at" timestamp NOT NULL) [0m
+  [1m[35m (1.0ms)[0m  CREATE  INDEX  "index_metasploit_credential_origin_imports_on_task_id" ON "metasploit_credential_origin_imports"  ("task_id")
+  [1m[36mSQL (0.3ms)[0m  [1mINSERT INTO "schema_migrations" ("version") VALUES ($1)[0m  [["version", "20140410205410"]]
+  [1m[35m (0.5ms)[0m  COMMIT
+Migrating to CreateMetasploitCredentialOriginSessions (20140411142102)
+  [1m[36m (0.3ms)[0m  [1mBEGIN[0m
+  [1m[35m (3.0ms)[0m  CREATE TABLE "metasploit_credential_origin_sessions" ("id" serial primary key, "post_reference_name" text NOT NULL, "session_id" integer NOT NULL, "created_at" timestamp NOT NULL, "updated_at" timestamp NOT NULL) 
+  [1m[36m (1.0ms)[0m  [1mCREATE UNIQUE INDEX  "unique_metasploit_credential_origin_sessions" ON "metasploit_credential_origin_sessions"  ("session_id", "post_reference_name")[0m
+  [1m[35mSQL (0.2ms)[0m  INSERT INTO "schema_migrations" ("version") VALUES ($1)  [["version", "20140411142102"]]
+  [1m[36m (0.5ms)[0m  [1mCOMMIT[0m
+Migrating to CreateMetasploitCredentialOriginServices (20140411205325)
+  [1m[35m (0.3ms)[0m  BEGIN
+  [1m[36m (4.1ms)[0m  [1mCREATE TABLE "metasploit_credential_origin_services" ("id" serial primary key, "service_id" integer NOT NULL, "module_full_name" text NOT NULL, "created_at" timestamp NOT NULL, "updated_at" timestamp NOT NULL) [0m
+  [1m[35m (1.1ms)[0m  CREATE UNIQUE INDEX  "unique_metasploit_credential_origin_services" ON "metasploit_credential_origin_services"  ("service_id", "module_full_name")
+  [1m[36mSQL (0.2ms)[0m  [1mINSERT INTO "schema_migrations" ("version") VALUES ($1)[0m  [["version", "20140411205325"]]
+  [1m[35m (0.5ms)[0m  COMMIT
+Migrating to CreateMetasploitCredentialCores (20140414192550)
+  [1m[36m (0.3ms)[0m  [1mBEGIN[0m
+  [1m[35m (2.9ms)[0m  CREATE TABLE "metasploit_credential_cores" ("id" serial primary key, "origin_id" integer NOT NULL, "origin_type" character varying NOT NULL, "private_id" integer, "public_id" integer, "realm_id" integer, "workspace_id" integer NOT NULL, "created_at" timestamp NOT NULL, "updated_at" timestamp NOT NULL) 
+  [1m[36m (1.1ms)[0m  [1mCREATE  INDEX  "index_metasploit_credential_cores_on_origin_type_and_origin_id" ON "metasploit_credential_cores"  ("origin_type", "origin_id")[0m
+  [1m[35m (1.0ms)[0m  CREATE  INDEX  "index_metasploit_credential_cores_on_private_id" ON "metasploit_credential_cores"  ("private_id")
+  [1m[36m (1.0ms)[0m  [1mCREATE  INDEX  "index_metasploit_credential_cores_on_public_id" ON "metasploit_credential_cores"  ("public_id")[0m
+  [1m[35m (1.1ms)[0m  CREATE  INDEX  "index_metasploit_credential_cores_on_realm_id" ON "metasploit_credential_cores"  ("realm_id")
+  [1m[36m (1.1ms)[0m  [1mCREATE  INDEX  "index_metasploit_credential_cores_on_workspace_id" ON "metasploit_credential_cores"  ("workspace_id")[0m
+  [1m[35mSQL (0.2ms)[0m  INSERT INTO "schema_migrations" ("version") VALUES ($1)  [["version", "20140414192550"]]
+  [1m[36m (0.5ms)[0m  [1mCOMMIT[0m
+Migrating to CreateMetasploitCredentialLogins (20140417140933)
+  [1m[35m (0.3ms)[0m  BEGIN
+  [1m[36m (2.9ms)[0m  [1mCREATE TABLE "metasploit_credential_logins" ("id" serial primary key, "core_id" integer NOT NULL, "service_id" integer NOT NULL, "access_level" character varying, "status" character varying NOT NULL, "last_attempted_at" timestamp, "created_at" timestamp NOT NULL, "updated_at" timestamp NOT NULL) [0m
+  [1m[35m (1.1ms)[0m  CREATE UNIQUE INDEX  "index_metasploit_credential_logins_on_core_id_and_service_id" ON "metasploit_credential_logins"  ("core_id", "service_id")
+  [1m[36m (1.0ms)[0m  [1mCREATE UNIQUE INDEX  "index_metasploit_credential_logins_on_service_id_and_core_id" ON "metasploit_credential_logins"  ("service_id", "core_id")[0m
+  [1m[35mSQL (0.2ms)[0m  INSERT INTO "schema_migrations" ("version") VALUES ($1)  [["version", "20140417140933"]]
+  [1m[36m (0.5ms)[0m  [1mCOMMIT[0m
+Migrating to AddLoginsCounterCacheToCores (20140520140817)
+  [1m[35m (0.3ms)[0m  BEGIN
+  [1m[36m (6.3ms)[0m  [1mALTER TABLE "metasploit_credential_cores" ADD "logins_count" integer DEFAULT 0[0m
+  [1m[35mMetasploit::Credential::Core Load (0.6ms)[0m  SELECT "metasploit_credential_cores".* FROM "metasploit_credential_cores"
+  [1m[36mSQL (0.2ms)[0m  [1mINSERT INTO "schema_migrations" ("version") VALUES ($1)[0m  [["version", "20140520140817"]]
+  [1m[35m (2.1ms)[0m  COMMIT
+Migrating to AddJtrFormatToMetasploitCredentialPrivates (20140603163708)
+  [1m[36m (0.3ms)[0m  [1mBEGIN[0m
+  [1m[35m (0.3ms)[0m  ALTER TABLE "metasploit_credential_privates" ADD "jtr_format" character varying
+  [1m[36mSQL (0.2ms)[0m  [1mINSERT INTO "schema_migrations" ("version") VALUES ($1)[0m  [["version", "20140603163708"]]
+  [1m[35m (0.4ms)[0m  COMMIT
+Migrating to CreateMetasploitCredentialOriginCrackedPasswords (20140605173747)
+  [1m[36m (0.2ms)[0m  [1mBEGIN[0m
+  [1m[35m (1.9ms)[0m  CREATE TABLE "metasploit_credential_origin_cracked_passwords" ("id" serial primary key, "metasploit_credential_core_id" integer NOT NULL, "created_at" timestamp NOT NULL, "updated_at" timestamp NOT NULL) 
+  [1m[36m (1.0ms)[0m  [1mCREATE  INDEX  "originating_credential_cores" ON "metasploit_credential_origin_cracked_passwords"  ("metasploit_credential_core_id")[0m
+  [1m[35mSQL (0.2ms)[0m  INSERT INTO "schema_migrations" ("version") VALUES ($1)  [["version", "20140605173747"]]
+  [1m[36m (0.4ms)[0m  [1mCOMMIT[0m
+Migrating to CreateCredentialCoresTasksJoinTable (20140702184622)
+  [1m[35m (0.3ms)[0m  BEGIN
+  [1m[36m (0.7ms)[0m  [1mCREATE TABLE "credential_cores_tasks" ("core_id" integer, "task_id" integer) [0m
+  [1m[35mSQL (0.2ms)[0m  INSERT INTO "schema_migrations" ("version") VALUES ($1)  [["version", "20140702184622"]]
+  [1m[36m (0.5ms)[0m  [1mCOMMIT[0m
+Migrating to CreateCredentialLoginsTasksJoinTable (20140703144541)
+  [1m[35m (0.2ms)[0m  BEGIN
+  [1m[36m (0.6ms)[0m  [1mCREATE TABLE "credential_logins_tasks" ("login_id" integer, "task_id" integer) [0m
+  [1m[35mSQL (0.3ms)[0m  INSERT INTO "schema_migrations" ("version") VALUES ($1)  [["version", "20140703144541"]]
+  [1m[36m (0.4ms)[0m  [1mCOMMIT[0m
+Migrating to OldCredsToNewCreds (20140722174919)
+  [1m[35m (0.2ms)[0m  BEGIN
+  [1m[36mMdm::Workspace Load (0.6ms)[0m  [1mSELECT "workspaces".* FROM "workspaces"[0m
+  [1m[35mSQL (0.3ms)[0m  INSERT INTO "schema_migrations" ("version") VALUES ($1)  [["version", "20140722174919"]]
+  [1m[36m (0.4ms)[0m  [1mCOMMIT[0m
+Migrating to UniqueMetasploitCredentialCores (20140728191933)
+  [1m[35m (0.2ms)[0m  BEGIN
+  [1m[36m (1.3ms)[0m  [1mCREATE UNIQUE INDEX unique_complete_metasploit_credential_cores ON metasploit_credential_cores (workspace_id, private_id, public_id) WHERE private_id IS NOT NULL AND public_id IS NOT NULL[0m
+  [1m[35m (0.9ms)[0m  CREATE UNIQUE INDEX unique_private_metasploit_credential_cores ON metasploit_credential_cores (workspace_id, private_id) WHERE private_id IS NOT NULL AND public_id IS NULL
+  [1m[36m (0.9ms)[0m  [1mCREATE UNIQUE INDEX unique_public_metasploit_credential_cores ON metasploit_credential_cores (workspace_id, public_id) WHERE private_id IS NULL AND public_id IS NOT NULL[0m
+  [1m[35mSQL (0.2ms)[0m  INSERT INTO "schema_migrations" ("version") VALUES ($1)  [["version", "20140728191933"]]
+  [1m[36m (0.4ms)[0m  [1mCOMMIT[0m
+Migrating to UniqueMetasploitCredentialCoresWithRealmId (20140801150537)
+  [1m[35m (0.2ms)[0m  BEGIN
+  [1m[36m (0.3ms)[0m  [1mDROP INDEX unique_complete_metasploit_credential_cores[0m
+  [1m[35m (0.2ms)[0m  DROP INDEX unique_private_metasploit_credential_cores
+  [1m[36m (0.3ms)[0m  [1mDROP INDEX unique_public_metasploit_credential_cores[0m
+  [1m[35m (1.1ms)[0m  CREATE UNIQUE INDEX unique_private_metasploit_credential_cores ON metasploit_credential_cores (workspace_id, private_id) WHERE realm_id IS NULL AND public_id IS NULL AND private_id IS NOT NULL
+  [1m[36m (0.8ms)[0m  [1mCREATE UNIQUE INDEX unique_public_metasploit_credential_cores ON metasploit_credential_cores (workspace_id, public_id) WHERE realm_id IS NULL AND public_id IS NOT NULL AND private_id IS NULL[0m
+  [1m[35m (0.9ms)[0m  CREATE UNIQUE INDEX unique_realmless_metasploit_credential_cores ON metasploit_credential_cores (workspace_id, public_id, private_id) WHERE realm_id IS NULL AND public_id IS NOT NULL AND private_id IS NOT NULL
+  [1m[36m (0.9ms)[0m  [1mCREATE UNIQUE INDEX unique_publicless_metasploit_credential_cores ON metasploit_credential_cores (workspace_id, realm_id, private_id) WHERE realm_id IS NOT NULL AND public_id IS NULL AND private_id IS NOT NULL[0m
+  [1m[35m (0.9ms)[0m  CREATE UNIQUE INDEX unique_privateless_metasploit_credential_cores ON metasploit_credential_cores (workspace_id, realm_id, public_id) WHERE realm_id IS NOT NULL AND public_id IS NOT NULL AND private_id IS NULL
+  [1m[36m (0.9ms)[0m  [1mCREATE UNIQUE INDEX unique_complete_metasploit_credential_cores ON metasploit_credential_cores (workspace_id, realm_id, public_id, private_id) WHERE realm_id IS NOT NULL AND public_id IS NOT NULL AND private_id IS NOT NULL[0m
+  [1m[35mSQL (0.2ms)[0m  INSERT INTO "schema_migrations" ("version") VALUES ($1)  [["version", "20140801150537"]]
+  [1m[36m (1.0ms)[0m  [1mCOMMIT[0m
+Migrating to AddDetectedArchToHost (20140905031549)
+  [1m[35m (0.2ms)[0m  BEGIN
+  [1m[36m (0.4ms)[0m  [1mALTER TABLE "hosts" ADD "detected_arch" character varying[0m
+  [1m[35mSQL (0.2ms)[0m  INSERT INTO "schema_migrations" ("version") VALUES ($1)  [["version", "20140905031549"]]
+  [1m[36m (0.4ms)[0m  [1mCOMMIT[0m
+Migrating to AddTypetoPublic (20140922170030)
+  [1m[35m (0.2ms)[0m  BEGIN
+  [1m[36m (0.3ms)[0m  [1mALTER TABLE "metasploit_credential_publics" ADD "type" character varying[0m
+  [1m[35m (0.4ms)[0m  UPDATE metasploit_credential_publics SET type = 'Metasploit::Credential::Username'
+  [1m[36m (0.3ms)[0m  [1mALTER TABLE "metasploit_credential_publics" ALTER COLUMN "type" TYPE character varying[0m
+  [1m[35m (0.2ms)[0m  ALTER TABLE "metasploit_credential_publics" ALTER "type" SET NOT NULL
+  [1m[36mSQL (0.2ms)[0m  [1mINSERT INTO "schema_migrations" ("version") VALUES ($1)[0m  [["version", "20140922170030"]]
+  [1m[35m (0.4ms)[0m  COMMIT
+Migrating to OldCredsToNewCreds2 (20150106201450)
+  [1m[36m (0.2ms)[0m  [1mBEGIN[0m
+  [1m[35mMdm::Workspace Load (0.3ms)[0m  SELECT "workspaces".* FROM "workspaces"
+  [1m[36mSQL (0.2ms)[0m  [1mINSERT INTO "schema_migrations" ("version") VALUES ($1)[0m  [["version", "20150106201450"]]
+  [1m[35m (0.4ms)[0m  COMMIT
+Migrating to RemoveDuplicateServices (20150112203945)
+  [1m[36m (0.2ms)[0m  [1mBEGIN[0m
+  [1m[35mMdm::Service Load (0.8ms)[0m  SELECT "services"."host_id", "services"."proto", COUNT("services"."port") FROM "services" GROUP BY host_id, port, proto HAVING COUNT("services"."port") > 1
+  [1m[36m (1.2ms)[0m  [1mCREATE UNIQUE INDEX  "index_services_on_host_id_and_port_and_proto" ON "services"  ("host_id", "port", "proto")[0m
+  [1m[35mSQL (0.2ms)[0m  INSERT INTO "schema_migrations" ("version") VALUES ($1)  [["version", "20150112203945"]]
+  [1m[36m (0.4ms)[0m  [1mCOMMIT[0m
+Migrating to DropServiceUniquenessIndex (20150205192745)
+  [1m[35m (0.2ms)[0m  BEGIN
+  [1m[36m (0.3ms)[0m  [1mDROP INDEX "index_services_on_host_id_and_port_and_proto"[0m
+  [1m[35mSQL (0.3ms)[0m  INSERT INTO "schema_migrations" ("version") VALUES ($1)  [["version", "20150205192745"]]
+  [1m[36m (0.7ms)[0m  [1mCOMMIT[0m
+Migrating to AddVulnIdToNote (20150209195939)
+  [1m[35m (0.2ms)[0m  BEGIN
+  [1m[36m (0.3ms)[0m  [1mALTER TABLE "notes" ADD "vuln_id" integer[0m
+  [1m[35m (1.1ms)[0m  CREATE  INDEX  "index_notes_on_vuln_id" ON "notes"  ("vuln_id")
+  [1m[36mSQL (0.2ms)[0m  [1mINSERT INTO "schema_migrations" ("version") VALUES ($1)[0m  [["version", "20150209195939"]]
+  [1m[35m (0.5ms)[0m  COMMIT
+Migrating to RemoveDuplicateServices2 (20150212214222)
+  [1m[36m (0.2ms)[0m  [1mBEGIN[0m
+  [1m[35mMdm::Service Load (0.4ms)[0m  SELECT "services"."host_id", "services"."proto", COUNT("services"."port") FROM "services" GROUP BY host_id, port, proto HAVING COUNT("services"."port") > 1
+  [1m[36m (1.0ms)[0m  [1mCREATE UNIQUE INDEX  "index_services_on_host_id_and_port_and_proto" ON "services"  ("host_id", "port", "proto")[0m
+  [1m[35mSQL (0.2ms)[0m  INSERT INTO "schema_migrations" ("version") VALUES ($1)  [["version", "20150212214222"]]
+  [1m[36m (0.4ms)[0m  [1mCOMMIT[0m
+Migrating to CreateModuleRuns (20150219173821)
+  [1m[35m (0.2ms)[0m  BEGIN
+  [1m[36m (3.2ms)[0m  [1mCREATE TABLE "module_runs" ("id" serial primary key, "attempted_at" timestamp, "fail_detail" text, "fail_reason" character varying, "module_fullname" text, "port" integer, "proto" character varying, "session_id" integer, "status" character varying, "trackable_id" integer, "trackable_type" character varying, "user_id" integer, "username" character varying, "created_at" timestamp NOT NULL, "updated_at" timestamp NOT NULL) [0m
+  [1m[35m (0.9ms)[0m  CREATE  INDEX  "index_module_runs_on_session_id" ON "module_runs"  ("session_id")
+  [1m[36m (0.8ms)[0m  [1mCREATE  INDEX  "index_module_runs_on_user_id" ON "module_runs"  ("user_id")[0m
+  [1m[35mSQL (0.2ms)[0m  INSERT INTO "schema_migrations" ("version") VALUES ($1)  [["version", "20150219173821"]]
+  [1m[36m (0.5ms)[0m  [1mCOMMIT[0m
+Migrating to AddModuleRunToSession (20150219215039)
+  [1m[35m (0.3ms)[0m  BEGIN
+  [1m[36m (0.3ms)[0m  [1mALTER TABLE "sessions" ADD "module_run_id" integer[0m
+  [1m[35m (0.9ms)[0m  CREATE  INDEX  "index_sessions_on_module_run_id" ON "sessions"  ("module_run_id")
+  [1m[36mSQL (0.2ms)[0m  [1mINSERT INTO "schema_migrations" ("version") VALUES ($1)[0m  [["version", "20150219215039"]]
+  [1m[35m (0.4ms)[0m  COMMIT
+Migrating to AddModuleRunFkToLoot (20150226151459)
+  [1m[36m (0.2ms)[0m  [1mBEGIN[0m
+  [1m[35m (0.3ms)[0m  ALTER TABLE "loots" ADD "module_run_id" integer
+  [1m[36m (0.9ms)[0m  [1mCREATE  INDEX  "index_loots_on_module_run_id" ON "loots"  ("module_run_id")[0m
+  [1m[35mSQL (0.2ms)[0m  INSERT INTO "schema_migrations" ("version") VALUES ($1)  [["version", "20150226151459"]]
+  [1m[36m (0.4ms)[0m  [1mCOMMIT[0m
+Migrating to AddModuleFullNameToMatch (20150312155312)
+  [1m[35m (0.2ms)[0m  BEGIN
+  [1m[36m (0.3ms)[0m  [1mALTER TABLE "automatic_exploitation_matches" ADD "module_fullname" text[0m
+  [1m[35m (0.9ms)[0m  CREATE  INDEX  "index_automatic_exploitation_matches_on_module_fullname" ON "automatic_exploitation_matches"  ("module_fullname")
+  [1m[36mSQL (0.2ms)[0m  [1mINSERT INTO "schema_migrations" ("version") VALUES ($1)[0m  [["version", "20150312155312"]]
+  [1m[35m (0.4ms)[0m  COMMIT
+Migrating to RenameModuleIndices (20150317145455)
+  [1m[36m (0.2ms)[0m  [1mBEGIN[0m
+  [1m[35mSQL (0.3ms)[0m  INSERT INTO "schema_migrations" ("version") VALUES ($1)  [["version", "20150317145455"]]
+  [1m[36m (0.4ms)[0m  [1mCOMMIT[0m
+Migrating to AddMissingAeIndices (20150326183742)
+  [1m[35m (0.2ms)[0m  BEGIN
+  [1m[36m (1.1ms)[0m  [1mCREATE  INDEX  "index_automatic_exploitation_match_results_on_match_id" ON "automatic_exploitation_match_results"  ("match_id")[0m
+  [1m[35m (1.0ms)[0m  CREATE  INDEX  "index_automatic_exploitation_match_results_on_run_id" ON "automatic_exploitation_match_results"  ("run_id")
+  [1m[36m (1.0ms)[0m  [1mCREATE  INDEX  "index_automatic_exploitation_runs_on_match_set_id" ON "automatic_exploitation_runs"  ("match_set_id")[0m
+  [1m[35m (0.8ms)[0m  CREATE  INDEX  "index_automatic_exploitation_runs_on_user_id" ON "automatic_exploitation_runs"  ("user_id")
+  [1m[36m (1.0ms)[0m  [1mCREATE  INDEX  "index_automatic_exploitation_runs_on_workspace_id" ON "automatic_exploitation_runs"  ("workspace_id")[0m
+  [1m[35mSQL (0.2ms)[0m  INSERT INTO "schema_migrations" ("version") VALUES ($1)  [["version", "20150326183742"]]
+  [1m[36m (0.4ms)[0m  [1mCOMMIT[0m
+Migrating to RenameAutomaticExploitationIndex (20150421211719)
+  [1m[35m (0.3ms)[0m  BEGIN
+  [1m[36mSQL (0.2ms)[0m  [1mINSERT INTO "schema_migrations" ("version") VALUES ($1)[0m  [["version", "20150421211719"]]
+  [1m[35m (0.4ms)[0m  COMMIT
+Migrating to AddOriginToMdmVuln (20150514182921)
+  [1m[36m (0.2ms)[0m  [1mBEGIN[0m
+  [1m[35m (0.3ms)[0m  ALTER TABLE "vulns" ADD "origin_id" integer
+  [1m[36m (0.3ms)[0m  [1mALTER TABLE "vulns" ADD "origin_type" character varying[0m
+  [1m[35m (0.9ms)[0m  CREATE  INDEX  "index_vulns_on_origin_id" ON "vulns"  ("origin_id")
+  [1m[36mSQL (0.2ms)[0m  [1mINSERT INTO "schema_migrations" ("version") VALUES ($1)[0m  [["version", "20150514182921"]]
+  [1m[35m (0.4ms)[0m  COMMIT
+Migrating to RemoveNotNullFromWebVulnPArams (20160415153312)
+  [1m[36m (0.1ms)[0m  [1mBEGIN[0m
+  [1m[35m (0.2ms)[0m  ALTER TABLE "web_vulns" ALTER "params" DROP NOT NULL
+  [1m[36mSQL (0.2ms)[0m  [1mINSERT INTO "schema_migrations" ("version") VALUES ($1)[0m  [["version", "20160415153312"]]
+  [1m[35m (0.4ms)[0m  COMMIT
+Migrating to AddFingerprintedToWorkspace (20161004165612)
+  [1m[36m (0.2ms)[0m  [1mBEGIN[0m
+  [1m[35m (3.2ms)[0m  ALTER TABLE "workspaces" ADD "import_fingerprint" boolean DEFAULT 'f'
+  [1m[36mSQL (0.2ms)[0m  [1mINSERT INTO "schema_migrations" ("version") VALUES ($1)[0m  [["version", "20161004165612"]]
+  [1m[35m (1.1ms)[0m  COMMIT
+Migrating to RecreateIndexOnPrivateDataAndType (20161107153145)
+  [1m[36m (0.3ms)[0m  [1mBEGIN[0m
+  [1m[35m (0.3ms)[0m  DROP INDEX "index_metasploit_credential_privates_on_type_and_data"
+  [1m[36m (1.2ms)[0m  [1mCREATE UNIQUE INDEX  "index_metasploit_credential_privates_on_type_and_data" ON "metasploit_credential_privates"  ("type", "data") WHERE NOT (type = 'Metasploit::Credential::SSHKey')[0m
+  [1m[35mSQL (0.2ms)[0m  INSERT INTO "schema_migrations" ("version") VALUES ($1)  [["version", "20161107153145"]]
+  [1m[36m (0.7ms)[0m  [1mCOMMIT[0m
+Migrating to CreateIndexOnPrivateDataAndTypeForSshKey (20161107203710)
+  [1m[35m (0.2ms)[0m  BEGIN
+  [1m[36m (1.4ms)[0m  [1mCREATE UNIQUE INDEX "index_metasploit_credential_privates_on_type_and_data_sshkey" ON
+"metasploit_credential_privates" ("type", decode(md5(data), 'hex'))
+WHERE type in ('Metasploit::Credential::SSHKey')
+[0m
+  [1m[35mSQL (0.3ms)[0m  INSERT INTO "schema_migrations" ("version") VALUES ($1)  [["version", "20161107203710"]]
+  [1m[36m (0.4ms)[0m  [1mCOMMIT[0m
+Migrating to AddOsFamilyToHosts (20161227212223)
+  [1m[35m (0.2ms)[0m  BEGIN
+  [1m[36m (0.3ms)[0m  [1mALTER TABLE "hosts" ADD "os_family" character varying[0m
+  [1m[35mSQL (0.2ms)[0m  INSERT INTO "schema_migrations" ("version") VALUES ($1)  [["version", "20161227212223"]]
+  [1m[36m (0.4ms)[0m  [1mCOMMIT[0m

@@ -1,0 +1,2 @@
+[1;31m[x][0;0m Could not get a response from mugshots.com. Maybe target is down ?
+[1;31m[x][0;0m Could not get a response from mugshots.com. Maybe target is down ?

@@ -1,0 +1,51 @@
+[1;32m[v][0;0m Writing DNS query results
+A
+
+	52.72.55.221
+	52.207.117.73
+NS
+
+	ns-1462.awsdns-54.org.
+	ns-744.awsdns-29.net.
+	ns-20.awsdns-02.com.
+	ns-1864.awsdns-41.co.uk.
+TXT
+
+	"v=spf1 include:amazonses.com -all"
+SOA
+
+	ns-744.awsdns-29.net. awsdns-hostmaster.amazon.com. 1 7200 900 1209600 86400
+[1;32m[v][0;0m Writing DNS query results
+TXT
+
+	"v=spf1 include:amazonses.com -all"
+SOA
+
+	ns-744.awsdns-29.net. awsdns-hostmaster.amazon.com. 1 7200 900 1209600 86400
+A
+
+	52.207.117.73
+	52.72.55.221
+NS
+
+	ns-1462.awsdns-54.org.
+	ns-20.awsdns-02.com.
+	ns-1864.awsdns-41.co.uk.
+	ns-744.awsdns-29.net.
+[1;32m[v][0;0m Writing DNS query results
+A
+
+	52.72.55.221
+	52.207.117.73
+SOA
+
+	ns-744.awsdns-29.net. awsdns-hostmaster.amazon.com. 1 7200 900 1209600 86400
+NS
+
+	ns-1864.awsdns-41.co.uk.
+	ns-20.awsdns-02.com.
+	ns-1462.awsdns-54.org.
+	ns-744.awsdns-29.net.
+TXT
+
+	"v=spf1 include:amazonses.com -all"

@@ -1,0 +1,32 @@
+[1;34m[#][0;0m Fuzzing URLs
+[1;34m[#][0;0m Reading from list: /usr/local/Cellar/python3/3.5.2_3/Frameworks/Python.framework/Versions/3.5/lib/python3.5/site-packages/raccoon_src/wordlists/fuzzlist
+	[1;32m[200][0;0m http://bookingbytes.com/mailman/listinfo
+	[1;34m[301][0;0m http://bookingbytes.com/kpanel/ redirects to http://bookingbytes.com:2082/
+	[1;32m[200][0;0m http://bookingbytes.com/favicon.ico
+	[1;34m[301][0;0m http://bookingbytes.com/cpanel redirects to http://bookingbytes.com:2082
+	[1;34m[301][0;0m http://bookingbytes.com/articles redirects to http://bookingbytes.com/articles/
+	[1;34m[301][0;0m http://bookingbytes.com/controlpanel redirects to http://bookingbytes.com:2082
+	[1;34m[301][0;0m http://bookingbytes.com/cgi-sys redirects to http://bookingbytes.com/cgi-sys/
+	[1;34m[301][0;0m http://bookingbytes.com/controlpanel/ redirects to http://bookingbytes.com:2082/
+	[1;34m[301][0;0m http://bookingbytes.com/webmail/ redirects to http://bookingbytes.com:2095/
+	[1;34m[301][0;0m http://bookingbytes.com/cgi-bin redirects to http://bookingbytes.com/cgi-bin/
+	[1;34m[301][0;0m http://bookingbytes.com/pipermail redirects to http://bookingbytes.com/pipermail/
+	[1;34m[301][0;0m http://bookingbytes.com/mailman redirects to http://bookingbytes.com/mailman/
+	[1;32m[200][0;0m http://bookingbytes.com/~admin/
+	[1;31m[500][0;0m http://bookingbytes.com/cgi-sys/
+	[1;34m[301][0;0m http://bookingbytes.com/webmail/src/configtest.php redirects to http://bookingbytes.com:2095/src/configtest.php
+	[1;34m[301][0;0m http://bookingbytes.com/cpanel/ redirects to http://bookingbytes.com:2082/
+[1;34m[#][0;0m Done fuzzing URLs
+[1;34m[#][0;0m Fuzzing URLs
+[1;34m[#][0;0m Reading from list: /usr/local/Cellar/python3/3.5.2_3/Frameworks/Python.framework/Versions/3.5/lib/python3.5/site-packages/raccoon_src/wordlists/fuzzlist
+	[1;31m[500][0;0m http://bookingbytes.com/cgi-sys/
+	[1;34m[301][0;0m http://bookingbytes.com/cpanel redirects to http://bookingbytes.com:2082
+	[1;34m[301][0;0m http://bookingbytes.com/cgi-sys redirects to http://bookingbytes.com/cgi-sys/
+	[1;34m[301][0;0m http://bookingbytes.com/webmail/src/configtest.php redirects to http://bookingbytes.com:2095/src/configtest.php
+	[1;34m[301][0;0m http://bookingbytes.com/cgi-bin redirects to http://bookingbytes.com/cgi-bin/
+	[1;34m[301][0;0m http://bookingbytes.com/cpanel/ redirects to http://bookingbytes.com:2082/
+	[1;34m[301][0;0m http://bookingbytes.com/kpanel/ redirects to http://bookingbytes.com:2082/
+	[1;34m[301][0;0m http://bookingbytes.com/mailman redirects to http://bookingbytes.com/mailman/
+	[1;34m[301][0;0m http://bookingbytes.com/pipermail redirects to http://bookingbytes.com/pipermail/
+	[1;32m[200][0;0m http://bookingbytes.com/favicon.ico
+[1;34m[#][0;0m Done fuzzing URLs

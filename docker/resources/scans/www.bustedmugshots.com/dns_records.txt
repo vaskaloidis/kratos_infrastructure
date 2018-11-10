@@ -1,0 +1,38 @@
+[1;32m[v][0;0m Writing DNS query results
+SOA
+
+	abby.ns.cloudflare.com. dns.cloudflare.com. 2029130301 10000 2400 604800 3600
+MX
+
+	30 aspmx2.googlemail.com.
+	10 aspmx.l.google.com.
+	30 aspmx3.googlemail.com.
+	20 alt1.aspmx.l.google.com.
+	20 alt2.aspmx.l.google.com.
+A
+
+	104.31.0.164
+	104.31.1.164
+NS
+
+	abby.ns.cloudflare.com.
+	gabe.ns.cloudflare.com.
+[1;32m[v][0;0m Writing DNS query results
+MX
+
+	20 alt2.aspmx.l.google.com.
+	30 aspmx2.googlemail.com.
+	30 aspmx3.googlemail.com.
+	10 aspmx.l.google.com.
+	20 alt1.aspmx.l.google.com.
+NS
+
+	gabe.ns.cloudflare.com.
+	abby.ns.cloudflare.com.
+SOA
+
+	abby.ns.cloudflare.com. dns.cloudflare.com. 2029130301 10000 2400 604800 3600
+A
+
+	104.31.0.164
+	104.31.1.164

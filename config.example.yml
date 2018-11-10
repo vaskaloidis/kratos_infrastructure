@@ -1,0 +1,46 @@
+target_data:
+  -projects:
+    - project: hydra
+      - name: website.com-server
+      - name: website.com-pc
+    - project: scylla
+      - name: pc-laptop-1
+      - name: pc-laptop-1
+  -targets:
+    - ip: 123.456.7.88
+      website: website.com
+      name: website.com-server
+    - name: website.com-pc
+      website: website.com
+      os: windows-7
+      type: pc
+
+server_data:
+  - hosts:
+    - host: goldberglawfirm.tk
+      ip: 123.456.7.39
+      ssh_username: root
+      ssh_password: 23400sc87c9876
+    - host: zeus.bluehelmet.software
+      local: Zeus
+      ssh_username: vasili
+      ssh_password:
+      listeners:
+      - victim: target-name, target2-name, target3-name
+        port: 80
+        server: zeus.bluehelmet.software
+      - victim: target3-name, target2-name, target3-name
+        port: 80
+        server: zeus.bluehelmet.software
+
+backdoor_data:
+  - victim: target-name
+  - victim: target2-name
+
+
+server_configs:
+  - proxy_routes:
+    - url: somewebsite.com/dir1?query=variable
+      destination: server:9123
+    - source: 123.456.7.7:21
+      destination: localhost:9122

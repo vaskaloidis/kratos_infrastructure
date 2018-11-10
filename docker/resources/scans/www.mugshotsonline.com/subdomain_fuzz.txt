@@ -1,0 +1,4 @@
+[1;34m[#][0;0m Reading from list: /usr/local/Cellar/python3/3.5.2_3/Frameworks/Python.framework/Versions/3.5/lib/python3.5/site-packages/raccoon_src/wordlists/subdomains
+	[1;32m[200][0;0m https://WWW.mugshotsonline.com
+[1;34m[#][0;0m Reading from list: /usr/local/Cellar/python3/3.5.2_3/Frameworks/Python.framework/Versions/3.5/lib/python3.5/site-packages/raccoon_src/wordlists/subdomains
+	[1;32m[200][0;0m https://WWW.mugshotsonline.com

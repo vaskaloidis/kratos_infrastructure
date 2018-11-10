@@ -1,0 +1,4 @@
+[1;34m[#][0;0m Trying to detect WAF presence in www.bustedmugshots.com
+[1;31m[x][0;0m Detected WAF presence in web application: [1;31mCloudflare[0;0m
+[1;34m[#][0;0m Trying to detect WAF presence in www.bustedmugshots.com
+[93m[!][0;0m Target does not seem to have an active web server on port 443. No WAF could be detected on an application level.

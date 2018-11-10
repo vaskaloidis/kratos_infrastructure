@@ -1,0 +1,4 @@
+[1;34m[#][0;0m Trying to detect WAF presence in bookingbytes.com
+[93m[!][0;0m Target does not seem to have an active web server on port 80. No WAF could be detected on an application level.
+[1;34m[#][0;0m Trying to detect WAF presence in bookingbytes.com
+[1;32m[v][0;0m Did not detect WAF presence in target

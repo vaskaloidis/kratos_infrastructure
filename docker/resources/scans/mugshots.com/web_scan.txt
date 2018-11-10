@@ -1,0 +1,7 @@
+[1;34m[#][0;0m Trying to collect mugshots.com web application data
+[1;34m[#][0;0m Trying to collect mugshots.com web application data
+[1;32m[v][0;0m Found robots.txt
+[1;32m[v][0;0m Web server detected: [1;32mopenresty/1.9.7.4[0;0m
+[1;32m[v][0;0m X-Frame-Options header not detected - target might be vulnerable to clickjacking
+[93m[!][0;0m 1 HTML forms discovered
+	Form details: ID: site-search, Class: None, Method: None, action: /search.html

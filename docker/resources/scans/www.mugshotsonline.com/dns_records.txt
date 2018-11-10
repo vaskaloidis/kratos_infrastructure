@@ -1,0 +1,44 @@
+[1;32m[v][0;0m Writing DNS query results
+A
+
+	104.28.18.243
+	104.28.19.243
+NS
+
+	abby.ns.cloudflare.com.
+	gabe.ns.cloudflare.com.
+MX
+
+	30 aspmx3.googlemail.com.
+	30 aspmx2.googlemail.com.
+	20 alt2.aspmx.l.google.com.
+	10 aspmx.l.google.com.
+	20 alt1.aspmx.l.google.com.
+TXT
+
+	"google-site-verification=ql27_mI3SZH8YVo946cCR6rEJQ6ZJPt-54p7PmsE0RI"
+SOA
+
+	abby.ns.cloudflare.com. dns.cloudflare.com. 2029130522 10000 2400 604800 3600
+[1;32m[v][0;0m Writing DNS query results
+NS
+
+	gabe.ns.cloudflare.com.
+	abby.ns.cloudflare.com.
+MX
+
+	10 aspmx.l.google.com.
+	30 aspmx2.googlemail.com.
+	20 alt2.aspmx.l.google.com.
+	30 aspmx3.googlemail.com.
+	20 alt1.aspmx.l.google.com.
+A
+
+	104.28.19.243
+	104.28.18.243
+SOA
+
+	abby.ns.cloudflare.com. dns.cloudflare.com. 2029130522 10000 2400 604800 3600
+TXT
+
+	"google-site-verification=ql27_mI3SZH8YVo946cCR6rEJQ6ZJPt-54p7PmsE0RI"
