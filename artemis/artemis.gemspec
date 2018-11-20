@@ -47,6 +47,9 @@ Gem::Specification.new do |spec|
   spec.add_dependency "thor", "~> 0.20.0"
   spec.add_dependency "docker-api"
   spec.add_dependency "net-ssh"
+  # spec.add_dependency "rbrk", :git => "git@github.com:emonti/rbkb.git"
+  spec.add_dependency "rbrk"
+  spec.add_dependency "bluehelmet-utils"
 
   spec.add_development_dependency "bundler", "~> 1.17"
   spec.add_development_dependency "rake", "~> 10.0"

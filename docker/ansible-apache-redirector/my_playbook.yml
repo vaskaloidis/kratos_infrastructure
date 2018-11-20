@@ -1,0 +1,39 @@
+- hosts: EnigmaticEmu
+  gather_facts: False
+  user: root
+  pre_tasks:
+  - name: Install python for Ansible
+    raw: test -e /usr/bin/python || (apt -y update && apt install -y python-minimal)
+    changed_when: False
+  - setup: # aka gather_facts
+  tasks:
+  - include_role:
+      name: redirectors
+    vars:
+      le_email: 'threat@tevora.com'
+      hop_dir: hops/empire_hop
+      vhosts: [
+        {
+          servername: 'fakeamazon.com',
+          http_port: 80,
+          https_port: 443,
+          c2filters: [
+            {
+              rewritefilter: '^/orders/track/?$',
+              host: '123.124.125.126'
+            }
+          ],
+          configs: [
+            'RewriteRule !\.php$ https://www.amazon.com/%{REQUEST_URI} [L,R=302]'
+          ]
+        },
+ {
+          servername: 'fakegoogle.com',
+          http_port: 80,
+          https_port: 443,
+          config_files: [
+            "redirectors.txt",
+            "apache_tweaks.conf"
+          ],
+        }
+      ]
